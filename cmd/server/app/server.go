@@ -12,10 +12,11 @@ import (
 
 func NewServerCommand() *cobra.Command {
 
-	app := fx.New(
+	injector := fx.New(
 		fx.Provide(common.NewHelper), // NewHelper will be called only if someone needs "*Helper" object.
-		fx.Invoke(Register),          // This will be called by app.Start()
-		fx.Invoke(NewEntryPoint),     // This will be called by app.Start()
+		fx.Provide(NewHandler),
+		fx.Invoke(Register),      // This will be called by injector.Start()
+		fx.Invoke(NewEntryPoint), // This will be called by injector.Start()
 		fx.Supply(110),
 		fx.Supply(&common2.Config{Env: "prod", Port: 11}), // Everyone will have access to this object
 	)
@@ -26,7 +27,7 @@ func NewServerCommand() *cobra.Command {
 		Long:  `Long help code`,
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println("Your service running code here...")
-			err := app.Start(context.TODO())
+			err := injector.Start(context.TODO())
 			if err != nil {
 				fmt.Println("Got error", err)
 			}
