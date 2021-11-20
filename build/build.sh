@@ -1,0 +1,1 @@
+cd .. & go build -o app-server cmd/server/main.go
