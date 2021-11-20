@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/harishb2k/go-template-project/cmd/server/app"
 	"os"
+	"time"
 )
 
 func main() {
@@ -12,4 +13,5 @@ func main() {
 		_, _ = fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+	time.Sleep(2 * time.Second)
 }
