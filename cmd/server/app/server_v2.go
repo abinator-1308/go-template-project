@@ -5,7 +5,6 @@ import (
 	"github.com/harishb2k/go-template-project/internal/handler"
 	"github.com/harishb2k/go-template-project/pkg/server"
 	"go.uber.org/fx"
-	"golang.org/x/net/context"
 	"net/http"
 )
 
@@ -26,28 +25,22 @@ func (s *ServerImpl) routes() {
 	internalRouter := s.GetRouter().Group(serviceName + "/internal")
 
 	// We must add the MW with all the routers
-	s.GetRouter().Use(ginContextToContextMiddleware())
-	publicRouter.Use(ginContextToContextMiddleware())
-	internalRouter.Use(ginContextToContextMiddleware())
+	s.GetRouter().Use(server.GinContextToContextMiddleware())
+	publicRouter.Use(server.GinContextToContextMiddleware())
+	internalRouter.Use(server.GinContextToContextMiddleware())
 
+	// All v1 APIS
 	v1Apis := publicRouter.Group("/v1")
 	{
+		// User APIs
 		usersApi := v1Apis.Group("users")
 		usersApi.POST("", s.handleAddUser())
 		usersApi.GET("", s.handleGetUser())
 	}
 	{
+		// Random APIs
 		randomApi := v1Apis.Group("random")
 		randomApi.GET("", s.handleRandomApi())
-	}
-}
-
-// internal MW to add
-func ginContextToContextMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		ctx := context.WithValue(c.Request.Context(), "GinContextKey", c)
-		c.Request = c.Request.WithContext(ctx)
-		c.Next()
 	}
 }
 
