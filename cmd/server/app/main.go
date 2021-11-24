@@ -18,7 +18,7 @@ func NewServerCommand() *cobra.Command {
 		fx.Invoke(NewApplicationEntryPoint),
 
 		// Register all HTTP API handlers
-		handler.Module,
+		handler.RandomHandlerModule,
 		handler.UserHandlerModule,
 
 		// Basic dependency - underlying server, CrossFunc, configs for application
