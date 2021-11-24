@@ -25,16 +25,14 @@ func TestServer(t *testing.T) {
 		// Basic dependency - underlying server, CrossFunc, configs for application
 		fx.Provide(server.NewServer),
 		fx.Provide(gox.NewNoOpCrossFunction),
-		fx.Supply(config.App{
-			AppName:     "example",
-			HttpPort:    80,
-			Environment: "test",
-		}),
+		fx.Supply(config.App{}),
 
 		// Instance of underlying server
 		fx.Populate(&s),
 	)
 	_ = app.Start(context.TODO())
+	defer app.Stop(context.TODO())
+	defer s.Stop()
 
 	r := httptest.NewRequest("POST", "/srv/v1/users", nil)
 	w := httptest.NewRecorder()
