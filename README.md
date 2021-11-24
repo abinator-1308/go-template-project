@@ -29,6 +29,16 @@ This project provides a template to start a rest application in Go. It provides 
 
 ## Code Breakup
 
+##### Build and config
+
+Build folder has command to build and run the code
+1. sh build/build.sh -> build the code 
+2. sh build/run.sh -> run the code
+
+Config folder has a sample config:
+1. Gox-Http config to configure a client
+2. Messaging config to configure kafka integration
+
 ##### Entry point
 
 ```cmd/server/main.go``` is the main entry point for this app. This calls the command ```cmd/server/app/main.go```,
