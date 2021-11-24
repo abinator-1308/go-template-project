@@ -17,20 +17,7 @@ func NewServerCommand() *cobra.Command {
 		// Main entry point for server
 		fx.Invoke(NewApplicationEntryPoint),
 
-		/*fx.Provide(fx.Annotated{Name: "AddUserHandler", Target: func() http.HandlerFunc {
-			return func(w http.ResponseWriter, r *http.Request) {
-				fmt.Println("Called AddUserHandler")
-				w.WriteHeader(http.StatusOK)
-				_, _ = w.Write([]byte("Ok"))
-			}
-		}}),
-
-		fx.Provide(fx.Annotated{Name: "GetUserHandler", Target: func() http.HandlerFunc {
-			return func(w http.ResponseWriter, r *http.Request) {
-				fmt.Println("Called GetUserHandler")
-			}
-		}}),*/
-
+		// Register all HTTP API handlers
 		handler.Module,
 
 		// Basic dependency - underlying server, CrossFunc, configs for application
