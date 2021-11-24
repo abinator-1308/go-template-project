@@ -9,7 +9,6 @@ require (
 	github.com/stretchr/testify v1.7.0
 	go.uber.org/fx v1.15.0
 	go.uber.org/zap v1.17.0
-	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4
 )
 
 require (

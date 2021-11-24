@@ -5,6 +5,7 @@ import (
 	"github.com/harishb2k/go-template-project/pkg/server"
 	"go.uber.org/fx"
 	"net/http"
+	"sync"
 )
 
 // UserHandlerModule has all the HTTP hap handlers for user modules. By taking this approach we are able to:
@@ -24,7 +25,13 @@ type UserHandler struct {
 }
 
 func (uh *UserHandler) Adduser() http.HandlerFunc {
+	initOnce := sync.Once{}
 	return func(w http.ResponseWriter, r *http.Request) {
+
+		// One time Add user specific logic goes here
+		initOnce.Do(func() {
+			// You can do some setup which is very specific to Add user end-point here
+		})
 
 		// Get gin context if you want to use
 		ginContext := server.GinContextFromHttpRequestVerified(r)
