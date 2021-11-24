@@ -5,6 +5,7 @@ import (
 	"github.com/harishb2k/go-template-project/internal/handler"
 	"github.com/harishb2k/go-template-project/pkg/server"
 	"go.uber.org/fx"
+	"golang.org/x/net/context"
 	"net/http"
 )
 
@@ -23,7 +24,11 @@ func (s *ServerImpl) routes() {
 	serviceName := "srv"
 	publicRouter := s.GetRouter().Group(serviceName)
 	internalRouter := s.GetRouter().Group(serviceName + "/internal")
-	_ = internalRouter
+
+	// We must add the MW with all the routers
+	s.GetRouter().Use(ginContextToContextMiddleware())
+	publicRouter.Use(ginContextToContextMiddleware())
+	internalRouter.Use(ginContextToContextMiddleware())
 
 	v1Apis := publicRouter.Group("/v1")
 	{
@@ -37,20 +42,29 @@ func (s *ServerImpl) routes() {
 	}
 }
 
+// internal MW to add
+func ginContextToContextMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctx := context.WithValue(c.Request.Context(), "GinContextKey", c)
+		c.Request = c.Request.WithContext(ctx)
+		c.Next()
+	}
+}
+
 func (s *ServerImpl) handleAddUser() func(c *gin.Context) {
 	return func(c *gin.Context) {
-		s.UserHandler.Adduser().ServeHTTP(c.Writer, c.Request)
+		server.EnsureGinContextWrapper(s.UserHandler.Adduser()).ServeHTTP(c.Writer, c.Request)
 	}
 }
 
 func (s *ServerImpl) handleGetUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		s.UserHandler.GetUser().ServeHTTP(c.Writer, c.Request)
+		server.EnsureGinContextWrapper(s.UserHandler.GetUser()).ServeHTTP(c.Writer, c.Request)
 	}
 }
 
 func (s *ServerImpl) handleRandomApi() func(c *gin.Context) {
 	return func(c *gin.Context) {
-		s.RandomApiHandler.ServeHTTP(c.Writer, c.Request)
+		server.EnsureGinContextWrapper(s.RandomApiHandler).ServeHTTP(c.Writer, c.Request)
 	}
 }

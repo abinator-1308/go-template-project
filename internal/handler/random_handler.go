@@ -7,6 +7,7 @@ import (
 	"net/http"
 )
 
+// RandomHandlerModule provides example of a random API you can add
 var RandomHandlerModule = fx.Options(
 	fx.Provide(fx.Annotated{Name: "RandomApiHandler", Target: func(server server.Server) http.HandlerFunc {
 		return randomApiHandler()
