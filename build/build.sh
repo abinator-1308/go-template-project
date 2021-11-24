@@ -1,1 +1,1 @@
-cd .. & go build -o app-server cmd/server/main.go
+cd .. & go mod tidy & go fmt ./... & go generate ./... & go test ./... & go build -o app-server cmd/server/main.go

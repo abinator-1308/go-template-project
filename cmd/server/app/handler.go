@@ -3,18 +3,21 @@ package app
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	common "github.com/harishb2k/go-template-project/pkg/core/service"
+	service "github.com/harishb2k/go-template-project/pkg/core/service"
+	"github.com/harishb2k/go-template-project/pkg/server"
 	"net/http"
 )
 
-func Register(helper *common.Helper) {
+func Register(helper *service.Helper) {
 	fmt.Println("Got helper in the handler.Register() ", helper.Name)
 }
 
-func NewHandler() http.Handler {
+func NewHandler(server server.Server) http.Handler {
 	router := mux.NewRouter()
 	router.HandleFunc("/v1/test", func(writer http.ResponseWriter, request *http.Request) {
 		writer.WriteHeader(http.StatusOK)
 	}).Methods("GET")
+
+	server.GetRouter()
 	return router
 }

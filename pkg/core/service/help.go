@@ -1,4 +1,4 @@
-package common
+package service
 
 type Helper struct {
 	Name string
