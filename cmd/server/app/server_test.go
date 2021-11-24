@@ -27,7 +27,7 @@ func TestServer(t *testing.T) {
 		fx.Provide(gox.NewNoOpCrossFunction),
 		fx.Supply(config.App{
 			AppName:     "example",
-			HttpPort:    8098,
+			HttpPort:    80,
 			Environment: "test",
 		}),
 
