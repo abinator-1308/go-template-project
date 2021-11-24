@@ -23,7 +23,7 @@ server_config:
       concurrency: 3
 
 messaging_config:
-  enabled: true
+  enabled: false
   producers:
     some-topic:
       type: kafka

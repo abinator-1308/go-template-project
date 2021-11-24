@@ -28,7 +28,11 @@ func NewMessagingFactory(lifecycle fx.Lifecycle, cf gox.CrossFunction, configura
 
 	lifecycle.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
-			return service.Start(*configuration)
+			if configuration.Enabled {
+				return service.Start(*configuration)
+			} else {
+				return nil
+			}
 		},
 		OnStop: func(ctx context.Context) error {
 			return service.Stop()
