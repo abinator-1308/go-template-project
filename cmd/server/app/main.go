@@ -19,6 +19,7 @@ func NewServerCommand() *cobra.Command {
 
 		// Register all HTTP API handlers
 		handler.Module,
+		handler.UserHandlerModule,
 
 		// Basic dependency - underlying server, CrossFunc, configs for application
 		fx.Provide(server.NewServer),

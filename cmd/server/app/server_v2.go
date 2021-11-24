@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/harishb2k/go-template-project/internal/handler"
 	"github.com/harishb2k/go-template-project/pkg/server"
 	"go.uber.org/fx"
 	"net/http"
@@ -12,12 +13,12 @@ type ServerImpl struct {
 	server.Server
 	AddUserHandler http.HandlerFunc `name:"AddUserHandler"`
 	GetUserHandler http.HandlerFunc `name:"GetUserHandler"`
+	UserHandler    *handler.UserHandler
 }
 
 func (s *ServerImpl) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.GetRouter().ServeHTTP(w, r)
 }
-
 
 func (s *ServerImpl) routes() {
 	serviceName := "srv"
@@ -35,12 +36,12 @@ func (s *ServerImpl) routes() {
 
 func (s *ServerImpl) handleAddUser() func(c *gin.Context) {
 	return func(c *gin.Context) {
-		s.AddUserHandler.ServeHTTP(c.Writer, c.Request)
+		s.UserHandler.Adduser().ServeHTTP(c.Writer, c.Request)
 	}
 }
 
 func (s *ServerImpl) handleGetUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		s.GetUserHandler.ServeHTTP(c.Writer, c.Request)
+		s.UserHandler.GetUser().ServeHTTP(c.Writer, c.Request)
 	}
 }
