@@ -21,3 +21,15 @@ server_config:
       server: testServer
       timeout: 10
       concurrency: 3
+
+messaging_config:
+  enabled: true
+  producers:
+    some-topic:
+      type: kafka
+      topic: some-topic
+      endpoint: localhost:9092
+      session.timeout.ms: 1000
+      message_timeout_ms: 1000
+      properties:
+        acks: all

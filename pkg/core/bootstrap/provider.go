@@ -9,4 +9,5 @@ import (
 // 2. ...
 var Module = fx.Options(
 	fx.Provide(NewGoxHttpBuilder),
+	fx.Invoke(NewMessagingFactory),
 )

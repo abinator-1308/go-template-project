@@ -42,7 +42,10 @@ func NewServerCommand() *cobra.Command {
 			HttpPort:    8098,
 			Environment: "test",
 		}),
+
 		fx.Supply(&appConfig.ServerConfig), // Gox-Http config which is needed by bootstrap module
+
+		fx.Supply(&appConfig.MessagingConfig),
 
 		// Register all HTTP API handlers
 		handler.RandomHandlerModule,
