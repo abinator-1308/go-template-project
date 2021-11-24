@@ -31,8 +31,8 @@ func TestServer(t *testing.T) {
 		fx.Populate(&s),
 	)
 	_ = app.Start(context.TODO())
-	defer app.Stop(context.TODO())
-	defer s.Stop()
+	// defer app.Stop(context.TODO())
+	// defer s.Stop()
 
 	r := httptest.NewRequest("POST", "/srv/v1/users", nil)
 	w := httptest.NewRecorder()
