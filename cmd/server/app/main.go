@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"github.com/devlibx/gox-base"
 	"github.com/devlibx/gox-base/config"
+	"github.com/harishb2k/go-template-project/internal/handler"
 	"github.com/harishb2k/go-template-project/pkg/server"
 	"github.com/spf13/cobra"
 	"go.uber.org/fx"
-	"net/http"
 )
 
 func NewServerCommand() *cobra.Command {
@@ -17,7 +17,7 @@ func NewServerCommand() *cobra.Command {
 		// Main entry point for server
 		fx.Invoke(NewApplicationEntryPoint),
 
-		fx.Provide(fx.Annotated{Name: "AddUserHandler", Target: func() http.HandlerFunc {
+		/*fx.Provide(fx.Annotated{Name: "AddUserHandler", Target: func() http.HandlerFunc {
 			return func(w http.ResponseWriter, r *http.Request) {
 				fmt.Println("Called AddUserHandler")
 				w.WriteHeader(http.StatusOK)
@@ -29,7 +29,9 @@ func NewServerCommand() *cobra.Command {
 			return func(w http.ResponseWriter, r *http.Request) {
 				fmt.Println("Called GetUserHandler")
 			}
-		}}),
+		}}),*/
+
+		handler.Module,
 
 		// Basic dependency - underlying server, CrossFunc, configs for application
 		fx.Provide(server.NewServer),
