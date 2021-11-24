@@ -4,22 +4,35 @@ import (
 	"fmt"
 	"github.com/devlibx/gox-base"
 	"github.com/devlibx/gox-base/config"
+	"github.com/devlibx/gox-base/serialization"
+	config2 "github.com/harishb2k/go-template-project/internal/config"
 	"github.com/harishb2k/go-template-project/internal/handler"
+	"github.com/harishb2k/go-template-project/pkg/clients"
+	"github.com/harishb2k/go-template-project/pkg/core/bootstrap"
 	"github.com/harishb2k/go-template-project/pkg/server"
 	"github.com/spf13/cobra"
 	"go.uber.org/fx"
 )
 
 func NewServerCommand() *cobra.Command {
+
+	appConfig := config2.ApplicationConfig{}
+	err := serialization.ReadYaml("./config/app.yaml", &appConfig)
+	if err != nil {
+		panic(err)
+	}
+
 	var s server.Server
 	injector := fx.New(
 
 		// Main entry point for server
 		fx.Invoke(NewApplicationEntryPoint),
 
-		// Register all HTTP API handlers
-		handler.RandomHandlerModule,
-		handler.UserHandlerModule,
+		// Bootstrap dependencies - e.g. Gox HTTP, messaging, caching, ...
+		bootstrap.Module,
+
+		// Client module - these are the HTTP clients which this service can call
+		clients.Module,
 
 		// Basic dependency - underlying server, CrossFunc, configs for application
 		fx.Provide(server.NewServer),
@@ -29,6 +42,11 @@ func NewServerCommand() *cobra.Command {
 			HttpPort:    8098,
 			Environment: "test",
 		}),
+		fx.Supply(&appConfig.ServerConfig), // Gox-Http config which is needed by bootstrap module
+
+		// Register all HTTP API handlers
+		handler.RandomHandlerModule,
+		handler.UserHandlerModule,
 
 		// Instance of underlying server
 		fx.Populate(&s),

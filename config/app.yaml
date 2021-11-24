@@ -1,0 +1,23 @@
+server_config:
+  servers:
+    jsonplaceholder:
+      host: jsonplaceholder.typicode.com
+      port: 443
+      https: true
+      connect_timeout: 1000
+      connection_request_timeout: 1000
+    testServer:
+      host: localhost
+      port: 9123
+  apis:
+    getPost:
+      method: GET
+      path: /posts/{id}
+      server: jsonplaceholder
+      timeout: 1000
+      acceptable_codes: 200,201
+    delay_timeout_10:
+      path: /delay
+      server: testServer
+      timeout: 10
+      concurrency: 3

@@ -4,7 +4,10 @@ import (
 	"context"
 	"github.com/devlibx/gox-base"
 	"github.com/devlibx/gox-base/config"
+	"github.com/golang/mock/gomock"
 	"github.com/harishb2k/go-template-project/internal/handler"
+	"github.com/harishb2k/go-template-project/pkg/clients/jsonplaceholder"
+	mockJsonplaceholderClient "github.com/harishb2k/go-template-project/pkg/mocks/clients/jsonplaceholder"
 	"github.com/harishb2k/go-template-project/pkg/server"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/fx"
@@ -15,6 +18,8 @@ import (
 
 // End-to-End test to test out setup
 func TestServer(t *testing.T) {
+	ctrl := gomock.NewController(t)
+
 	var s ServerImpl
 	app := fx.New(
 
@@ -29,6 +34,9 @@ func TestServer(t *testing.T) {
 
 		// Instance of underlying server
 		fx.Populate(&s),
+
+		// Provide mocks
+		fx.Provide(func() jsonplaceholder.Client { return mockJsonplaceholderClient.NewMockClient(ctrl) }),
 	)
 	_ = app.Start(context.TODO())
 	// defer app.Stop(context.TODO())

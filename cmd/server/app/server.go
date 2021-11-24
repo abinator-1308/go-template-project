@@ -11,8 +11,11 @@ import (
 type ServerImpl struct {
 	fx.In
 	server.Server
-	RandomApiHandler http.HandlerFunc `name:"RandomApiHandler"`
-	UserHandler      *handler.UserHandler
+
+	UserHandler *handler.UserHandler
+
+	RandomApiHandler          http.HandlerFunc `name:"RandomApiHandler"`
+	JsonPlaceholderApiHandler http.HandlerFunc `name:"JsonPlaceholderApiHandler"`
 }
 
 func (s *ServerImpl) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -41,6 +44,7 @@ func (s *ServerImpl) routes() {
 		// Random APIs
 		randomApi := v1Apis.Group("random")
 		randomApi.GET("", s.handleRandomApi())
+		randomApi.GET("/JsonPlaceholderApiHandler", s.handleJsonPlaceholderApiHandler())
 	}
 }
 
@@ -59,5 +63,11 @@ func (s *ServerImpl) handleGetUser() gin.HandlerFunc {
 func (s *ServerImpl) handleRandomApi() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		server.EnsureGinContextWrapper(s.RandomApiHandler).ServeHTTP(c.Writer, c.Request)
+	}
+}
+
+func (s *ServerImpl) handleJsonPlaceholderApiHandler() func(c *gin.Context) {
+	return func(c *gin.Context) {
+		server.EnsureGinContextWrapper(s.JsonPlaceholderApiHandler).ServeHTTP(c.Writer, c.Request)
 	}
 }
