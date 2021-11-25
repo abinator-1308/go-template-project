@@ -6,6 +6,7 @@ require (
 	github.com/devlibx/gox-base v0.0.99
 	github.com/devlibx/gox-http v0.0.63
 	github.com/devlibx/gox-messaging v0.0.48
+	github.com/devlibx/gox-metrics v0.0.8
 	github.com/gin-gonic/gin v1.7.6
 	github.com/golang/mock v1.6.0
 	github.com/spf13/cobra v1.2.1
@@ -17,6 +18,8 @@ require (
 require (
 	github.com/afex/hystrix-go v0.0.0-20180502004556-fa1af6a1f4f5 // indirect
 	github.com/aws/aws-sdk-go v1.38.39 // indirect
+	github.com/beorn7/perks v1.0.1 // indirect
+	github.com/cactus/go-statsd-client v3.1.0+incompatible // indirect
 	github.com/confluentinc/confluent-kafka-go v1.7.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/devlibx/gox-aws v0.0.11 // indirect
@@ -32,13 +35,20 @@ require (
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.11 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
+	github.com/m3db/prometheus_client_golang v0.8.1 // indirect
+	github.com/m3db/prometheus_client_model v0.1.0 // indirect
+	github.com/m3db/prometheus_common v0.1.0 // indirect
+	github.com/m3db/prometheus_procfs v0.8.1 // indirect
 	github.com/mattn/go-isatty v0.0.12 // indirect
+	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/twmb/murmur3 v1.1.5 // indirect
+	github.com/uber-go/tally v3.4.0+incompatible // indirect
 	github.com/ugorji/go/codec v1.1.7 // indirect
 	github.com/urfave/negroni v1.0.0 // indirect
 	github.com/yalp/jsonpath v0.0.0-20180802001716-5cc68e5049a0 // indirect

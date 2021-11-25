@@ -8,6 +8,7 @@ import (
 // 1. Gox-Http to make HTTP calls to other services
 // 2. ...
 var Module = fx.Options(
-	fx.Provide(NewGoxHttpBuilder),
 	fx.Invoke(NewMessagingFactory),
+	fx.Provide(NewGoxHttpBuilder),
+	fx.Provide(NewMetricService),
 )

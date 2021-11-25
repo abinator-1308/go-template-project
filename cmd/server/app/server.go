@@ -3,6 +3,7 @@ package app
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/harishb2k/go-template-project/internal/handler"
+	"github.com/harishb2k/go-template-project/pkg/core/bootstrap"
 	"github.com/harishb2k/go-template-project/pkg/server"
 	"go.uber.org/fx"
 	"net/http"
@@ -12,7 +13,8 @@ type ServerImpl struct {
 	fx.In
 	server.Server
 
-	UserHandler *handler.UserHandler
+	UserHandler   *handler.UserHandler
+	MetricHandler *bootstrap.MetricHandler
 
 	RandomApiHandler          http.HandlerFunc `name:"RandomApiHandler"`
 	JsonPlaceholderApiHandler http.HandlerFunc `name:"JsonPlaceholderApiHandler"`
@@ -32,6 +34,11 @@ func (s *ServerImpl) routes() {
 	publicRouter.Use(server.GinContextToContextMiddleware())
 	internalRouter.Use(server.GinContextToContextMiddleware())
 
+	// register metric
+	{
+		publicRouter.GET("/metrics", s.handleMetricRequest())
+	}
+
 	// All v1 APIS
 	v1Apis := publicRouter.Group("/v1")
 	{
@@ -45,6 +52,12 @@ func (s *ServerImpl) routes() {
 		randomApi := v1Apis.Group("random")
 		randomApi.GET("", s.handleRandomApi())
 		randomApi.GET("/JsonPlaceholderApiHandler", s.handleJsonPlaceholderApiHandler())
+	}
+}
+
+func (s *ServerImpl) handleMetricRequest() func(c *gin.Context) {
+	return func(c *gin.Context) {
+		s.MetricHandler.ServeHTTP(c.Writer, c.Request)
 	}
 }
 

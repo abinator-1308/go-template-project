@@ -43,9 +43,9 @@ func NewServerCommand() *cobra.Command {
 			Environment: "test",
 		}),
 
-		fx.Supply(&appConfig.ServerConfig), // Gox-Http config which is needed by bootstrap module
-
-		fx.Supply(&appConfig.MessagingConfig),
+		fx.Supply(&appConfig.ServerConfig),    // Gox-Http config which is needed by bootstrap module
+		fx.Supply(&appConfig.MessagingConfig), // For messaging (if you don't use messaging pass a object with messaging enabled = false)
+		fx.Supply(&appConfig.MetricConfig),    // For messaging (if you don't use messaging pass a object with metric config enabled = false)
 
 		// Register all HTTP API handlers
 		handler.RandomHandlerModule,
