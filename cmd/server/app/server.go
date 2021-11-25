@@ -34,20 +34,17 @@ func (s *ServerImpl) routes() {
 	publicRouter := s.GetRouter().Group(serviceName)
 	internalRouter := s.GetRouter().Group(serviceName + "/internal")
 
-	// We must add the MW with all the routers
+	// We must add the MW with all the routers - Mandatory to Gin context available in handlers
 	s.GetRouter().Use(server.GinContextToContextMiddleware())
 	publicRouter.Use(server.GinContextToContextMiddleware())
 	internalRouter.Use(server.GinContextToContextMiddleware())
 
-	/*s.GetRouter().Use(ginhttp.Middleware(opentracing.GlobalTracer()))
-	publicRouter.Use(ginhttp.Middleware(opentracing.GlobalTracer()))
-	internalRouter.Use(ginhttp.Middleware(opentracing.GlobalTracer()))*/
-
+	// This is done for to get traces - Mandatory to get traces
 	s.GetRouter().Use(gintrace.Middleware(serviceName))
 	publicRouter.Use(gintrace.Middleware(serviceName))
 	internalRouter.Use(gintrace.Middleware(serviceName))
 
-	// register metric
+	// Register metric
 	{
 		publicRouter.GET("/metrics", s.handleMetricRequest())
 	}
