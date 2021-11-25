@@ -36,15 +36,17 @@ func NewMetricService(metricConfig *metrics.Config) (metrics.Scope, *MetricHandl
 	var mh metrics.Reporter
 	if reporter, ok := toRet.(metrics.Reporter); ok {
 		mh = reporter
-	} else {
-		mh = &MetricHandler{}
 	}
 
 	return toRet, &MetricHandler{MetricsReporter: mh}, err
 }
 
 func (mh *MetricHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(200)
+	if mh.MetricsReporter == nil {
+		w.WriteHeader(200)
+	} else {
+		mh.MetricsReporter.HTTPHandler().ServeHTTP(w, r)
+	}
 }
 
 func (mh *MetricHandler) HTTPHandler() http.Handler {

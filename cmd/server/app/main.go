@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/devlibx/gox-base"
 	"github.com/devlibx/gox-base/config"
+	"github.com/devlibx/gox-base/metrics"
 	"github.com/devlibx/gox-base/serialization"
 	config2 "github.com/harishb2k/go-template-project/internal/config"
 	"github.com/harishb2k/go-template-project/internal/handler"
@@ -12,6 +13,8 @@ import (
 	"github.com/harishb2k/go-template-project/pkg/server"
 	"github.com/spf13/cobra"
 	"go.uber.org/fx"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 func NewServerCommand() *cobra.Command {
@@ -36,7 +39,7 @@ func NewServerCommand() *cobra.Command {
 
 		// Basic dependency - underlying server, CrossFunc, configs for application
 		fx.Provide(server.NewServer),
-		fx.Provide(gox.NewNoOpCrossFunction),
+		fx.Provide(NewCrossFunctionProvider),
 		fx.Supply(config.App{
 			AppName:     "example",
 			HttpPort:    8098,
@@ -64,4 +67,11 @@ func NewServerCommand() *cobra.Command {
 			injector.Run()
 		},
 	}
+}
+
+func NewCrossFunctionProvider(metric metrics.Scope) gox.CrossFunction {
+	var loggerConfig zap.Config
+	loggerConfig.Level = zap.NewAtomicLevelAt(zapcore.DebugLevel)
+	logger, _ := loggerConfig.Build()
+	return gox.NewCrossFunction(logger, metric)
 }

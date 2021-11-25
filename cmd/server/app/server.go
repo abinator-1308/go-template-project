@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/devlibx/gox-base"
 	"github.com/gin-gonic/gin"
 	"github.com/harishb2k/go-template-project/internal/handler"
 	"github.com/harishb2k/go-template-project/pkg/core/bootstrap"
@@ -15,6 +16,7 @@ type ServerImpl struct {
 
 	UserHandler   *handler.UserHandler
 	MetricHandler *bootstrap.MetricHandler
+	Cf            gox.CrossFunction
 
 	RandomApiHandler          http.HandlerFunc `name:"RandomApiHandler"`
 	JsonPlaceholderApiHandler http.HandlerFunc `name:"JsonPlaceholderApiHandler"`
@@ -57,13 +59,15 @@ func (s *ServerImpl) routes() {
 
 func (s *ServerImpl) handleMetricRequest() func(c *gin.Context) {
 	return func(c *gin.Context) {
-		s.MetricHandler.ServeHTTP(c.Writer, c.Request)
+		s.MetricHandler.HTTPHandler().ServeHTTP(c.Writer, c.Request)
 	}
 }
 
 func (s *ServerImpl) handleAddUser() func(c *gin.Context) {
 	return func(c *gin.Context) {
-		server.EnsureGinContextWrapper(s.UserHandler.Adduser()).ServeHTTP(c.Writer, c.Request)
+		hf := server.EnsureGinContextWrapper(s.UserHandler.Adduser())
+		hf = server.MetricWrapper(hf, s.Cf, "add_user")
+		hf.ServeHTTP(c.Writer, c.Request)
 	}
 }
 

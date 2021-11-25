@@ -1,11 +1,15 @@
 package handler
 
 import (
+	"github.com/devlibx/gox-base"
 	"github.com/devlibx/gox-base/config"
+	"github.com/devlibx/gox-base/metrics"
 	"github.com/harishb2k/go-template-project/pkg/server"
 	"go.uber.org/fx"
+	"math/rand"
 	"net/http"
 	"sync"
+	"time"
 )
 
 // UserHandlerModule has all the HTTP hap handlers for user modules. By taking this approach we are able to:
@@ -13,33 +17,38 @@ import (
 // 2. User Handler can get everything injected and all handlers can use those dependencies
 // 3. Since we return plain HTTP handler, it can be ued by any framework (however you can have Gin specific code here)
 var UserHandlerModule = fx.Options(
-	fx.Provide(func(appConfig config.App) *UserHandler {
+	fx.Provide(func(cf gox.CrossFunction, appConfig config.App) *UserHandler {
 		return &UserHandler{
 			appConfig: appConfig,
+			cf:        cf,
 		}
 	}),
 )
 
 type UserHandler struct {
-	appConfig config.App
+	appConfig             config.App
+	cf                    gox.CrossFunction
+	addUserSuccessCounter metrics.Counter
 }
 
 func (uh *UserHandler) Adduser() http.HandlerFunc {
 	initOnce := sync.Once{}
 	return func(w http.ResponseWriter, r *http.Request) {
-
-		// One time Add user specific logic goes here
 		initOnce.Do(func() {
-			// You can do some setup which is very specific to Add user end-point here
+			uh.addUserSuccessCounter = uh.cf.Metric().Counter("handler__add_user_success")
 		})
 
 		// Get gin context if you want to use
 		ginContext := server.GinContextFromHttpRequestVerified(r)
 		_ = ginContext
 
+		// Dummy sleep for Api
+		time.Sleep(time.Duration(rand.Intn(10)) * time.Millisecond)
+
 		// Do your logic
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte("Ok"))
+		uh.addUserSuccessCounter.Inc(1)
 	}
 }
 
@@ -49,6 +58,9 @@ func (uh *UserHandler) GetUser() http.HandlerFunc {
 		// Get gin context if you want to use
 		ginContext := server.GinContextFromHttpRequestVerified(r)
 		_ = ginContext
+
+		// Dummy sleep for Api
+		time.Sleep(time.Duration(rand.Intn(10)) * time.Millisecond)
 
 		// Do your logic
 		w.WriteHeader(http.StatusOK)

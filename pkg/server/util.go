@@ -3,9 +3,13 @@ package server
 import (
 	"context"
 	"fmt"
+	"github.com/devlibx/gox-base"
 	"github.com/devlibx/gox-base/errors"
+	"github.com/devlibx/gox-base/metrics"
 	"github.com/gin-gonic/gin"
+	"github.com/uber-go/tally"
 	"net/http"
+	"sync"
 )
 
 // GinContextToContextMiddleware will add the Gin context in context so we can use it in request
@@ -59,5 +63,22 @@ func EnsureGinContextWrapper(h http.HandlerFunc) http.HandlerFunc {
 		}
 
 		h.ServeHTTP(writer, request)
+	}
+}
+
+func MetricWrapper(h http.HandlerFunc, cf gox.CrossFunction, metricName string) http.HandlerFunc {
+	initOnce := sync.Once{}
+	var callCounter metrics.Counter
+	var hist metrics.Histogram
+	return func(w http.ResponseWriter, r *http.Request) {
+		initOnce.Do(func() {
+			callCounter = cf.Metric().Counter("handler__" + metricName)
+			hist = cf.Metric().Histogram("hist__handler__"+metricName, tally.ValueBuckets{0.5, 0.9, 0.99, 0.999, 1})
+		})
+		callCounter.Inc(1)
+		sw := hist.Start()
+		defer sw.Stop()
+
+		h.ServeHTTP(w, r)
 	}
 }
