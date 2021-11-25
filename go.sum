@@ -85,8 +85,8 @@ github.com/devlibx/gox-base v0.0.61/go.mod h1:+aTKDejMgTy51PHBcmxD1piTafENrAJE1Q
 github.com/devlibx/gox-base v0.0.87/go.mod h1:RlazdR5oh0eH0RGx2bEDmEl+Rb2Nr8SEKXB3kOO1ZiM=
 github.com/devlibx/gox-base v0.0.100 h1:Obagg6x/QXC/A0FUt/EEmPAL35grIpuKVL0QdKX+las=
 github.com/devlibx/gox-base v0.0.100/go.mod h1:uuJnzvH8jQM0x5kOY36+UA6hYYXx1WxXG/5ltBiPk4A=
-github.com/devlibx/gox-http v0.0.63 h1:rnzf1dWB0QnDaBS0mU/yaTSyfOQcDba4rFCCRpbwmlw=
-github.com/devlibx/gox-http v0.0.63/go.mod h1:9SJ2DXZZjXQa1NLi/3aWPq9grxgMvQQZrCwkK/9CE5Y=
+github.com/devlibx/gox-http v0.0.64 h1:+VbAO7k1ry2rvKytrlvpen2gUB8bzvUC9TvpVSb4Vdk=
+github.com/devlibx/gox-http v0.0.64/go.mod h1:9SJ2DXZZjXQa1NLi/3aWPq9grxgMvQQZrCwkK/9CE5Y=
 github.com/devlibx/gox-messaging v0.0.48 h1:qzmtxXlsCJ7VYqfztT097gBuPCn0uhYJs8XKCGRJZ10=
 github.com/devlibx/gox-messaging v0.0.48/go.mod h1:NunPdvhXr8m93Lkis5+V91AUJieJt7lCNpP2dfjdRP0=
 github.com/devlibx/gox-metrics v0.0.8 h1:gPhhFG+dejolz2WYPToOMRN53Pv11FTaSOAmnlw0ys8=

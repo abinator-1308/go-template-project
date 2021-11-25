@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/devlibx/gox-base v0.0.100
-	github.com/devlibx/gox-http v0.0.63
+	github.com/devlibx/gox-http v0.0.64
 	github.com/devlibx/gox-messaging v0.0.48
 	github.com/devlibx/gox-metrics v0.0.8
 	github.com/gin-gonic/gin v1.7.6
