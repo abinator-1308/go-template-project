@@ -31,6 +31,7 @@ func jsonPlaceHolderApiHandler(client jsonplaceholder.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		post, err := client.FetchPost(r.Context(), "1")
 		if err != nil {
+			fmt.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}

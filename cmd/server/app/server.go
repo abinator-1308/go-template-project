@@ -2,11 +2,13 @@ package app
 
 import (
 	"github.com/devlibx/gox-base"
+	"github.com/devlibx/gox-base/config"
 	"github.com/gin-gonic/gin"
 	"github.com/harishb2k/go-template-project/internal/handler"
 	"github.com/harishb2k/go-template-project/pkg/core/bootstrap"
 	"github.com/harishb2k/go-template-project/pkg/server"
 	"go.uber.org/fx"
+	gintrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/gin-gonic/gin"
 	"net/http"
 )
 
@@ -17,6 +19,7 @@ type ServerImpl struct {
 	UserHandler   *handler.UserHandler
 	MetricHandler *bootstrap.MetricHandler
 	Cf            gox.CrossFunction
+	AppConfig     config.App
 
 	RandomApiHandler          http.HandlerFunc `name:"RandomApiHandler"`
 	JsonPlaceholderApiHandler http.HandlerFunc `name:"JsonPlaceholderApiHandler"`
@@ -27,7 +30,7 @@ func (s *ServerImpl) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *ServerImpl) routes() {
-	serviceName := "srv"
+	serviceName := s.AppConfig.AppName
 	publicRouter := s.GetRouter().Group(serviceName)
 	internalRouter := s.GetRouter().Group(serviceName + "/internal")
 
@@ -35,6 +38,14 @@ func (s *ServerImpl) routes() {
 	s.GetRouter().Use(server.GinContextToContextMiddleware())
 	publicRouter.Use(server.GinContextToContextMiddleware())
 	internalRouter.Use(server.GinContextToContextMiddleware())
+
+	/*s.GetRouter().Use(ginhttp.Middleware(opentracing.GlobalTracer()))
+	publicRouter.Use(ginhttp.Middleware(opentracing.GlobalTracer()))
+	internalRouter.Use(ginhttp.Middleware(opentracing.GlobalTracer()))*/
+
+	s.GetRouter().Use(gintrace.Middleware(serviceName))
+	publicRouter.Use(gintrace.Middleware(serviceName))
+	internalRouter.Use(gintrace.Middleware(serviceName))
 
 	// register metric
 	{

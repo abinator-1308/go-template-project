@@ -3,7 +3,6 @@ package app
 import (
 	"fmt"
 	"github.com/devlibx/gox-base"
-	"github.com/devlibx/gox-base/config"
 	"github.com/devlibx/gox-base/metrics"
 	"github.com/devlibx/gox-base/serialization"
 	config2 "github.com/harishb2k/go-template-project/internal/config"
@@ -40,12 +39,8 @@ func NewServerCommand() *cobra.Command {
 		// Basic dependency - underlying server, CrossFunc, configs for application
 		fx.Provide(server.NewServer),
 		fx.Provide(NewCrossFunctionProvider),
-		fx.Supply(config.App{
-			AppName:     "example",
-			HttpPort:    8098,
-			Environment: "test",
-		}),
 
+		fx.Supply(appConfig.App),
 		fx.Supply(&appConfig.ServerConfig),    // Gox-Http config which is needed by bootstrap module
 		fx.Supply(&appConfig.MessagingConfig), // For messaging (if you don't use messaging pass a object with messaging enabled = false)
 		fx.Supply(&appConfig.MetricConfig),    // For messaging (if you don't use messaging pass a object with metric config enabled = false)

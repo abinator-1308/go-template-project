@@ -1,7 +1,13 @@
 package bootstrap
 
 import (
+	"fmt"
+	"github.com/devlibx/gox-base/config"
 	"github.com/devlibx/gox-base/metrics"
+	"github.com/devlibx/gox-base/util"
+	"github.com/opentracing/opentracing-go"
+	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/opentracer"
+	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 	"net/http"
 )
 import "github.com/devlibx/gox-metrics/provider/multi"
@@ -12,7 +18,7 @@ type MetricHandler struct {
 	MetricsReporter metrics.Reporter
 }
 
-func NewMetricService(metricConfig *metrics.Config) (metrics.Scope, *MetricHandler, error) {
+func NewMetricService(metricConfig *metrics.Config, appConfig config.App) (metrics.Scope, *MetricHandler, error) {
 	var toRet metrics.Scope
 	var err error
 	if metricConfig.Enabled {
@@ -36,6 +42,26 @@ func NewMetricService(metricConfig *metrics.Config) (metrics.Scope, *MetricHandl
 	var mh metrics.Reporter
 	if reporter, ok := toRet.(metrics.Reporter); ok {
 		mh = reporter
+	}
+
+	// Setup DD
+	host := metricConfig.Tracing.DD.Host
+	port := metricConfig.Tracing.DD.Port
+	env := metricConfig.Tracing.DD.Env
+	if !metricConfig.Tracing.Enabled {
+		fmt.Println("************* datadog tracer is not enabled *************")
+	} else if util.IsStringEmpty(host) || port <= 0 {
+		fmt.Println("datadog tracer is not enabled - host or port not provided")
+	} else {
+		agentAddr := fmt.Sprintf("%s:%d", host, port)
+		fmt.Println("Setting datadog tracer", "host=", host, "post=", port, "url=", agentAddr)
+		if util.IsStringEmpty(env) {
+			env = "dev"
+		}
+
+		// Set global tracer
+		t := opentracer.New(tracer.WithAgentAddr(agentAddr), tracer.WithServiceName(appConfig.AppName), tracer.WithEnv(env))
+		opentracing.SetGlobalTracer(t)
 	}
 
 	return toRet, &MetricHandler{MetricsReporter: mh}, err

@@ -1,3 +1,7 @@
+app:
+  name: ser
+  http_port: 8090
+  env: stage
 
 metric:
   enabled: true
@@ -9,7 +13,13 @@ metric:
     address: 127.0.0.1:1234
     flush_interval_ms: 10
     flush_bytes: 1440
-
+  tracing:
+    enabled: true
+    dd:
+      enabled: true
+      host: localhost
+      port: 8126
+      env: stage
 
 server_config:
   servers:
@@ -27,8 +37,10 @@ server_config:
       method: GET
       path: /posts/{id}
       server: jsonplaceholder
-      timeout: 1000
+      timeout: 10000
       acceptable_codes: 200,201
+      concurrency: 1000
+      queue_size: 1000
     delay_timeout_10:
       path: /delay
       server: testServer
