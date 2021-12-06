@@ -3,6 +3,8 @@ package noop
 import (
 	"context"
 	"github.com/harishb2k/go-template-project/pkg/database"
+	"github.com/harishb2k/go-template-project/pkg/database/dynamodb"
+	"github.com/harishb2k/go-template-project/pkg/database/noop"
 	"go.uber.org/fx"
 )
 
@@ -13,6 +15,8 @@ import (
 var CompositeDatabaseModule = fx.Options(
 	fx.Provide(newUserDao),
 	fx.Provide(func(impl *userDaoCompositeImpl) database.UserDao { return impl }),
+	dynamodb.DatabaseModule,
+	noop.DatabaseModule,
 )
 
 // input is a wrapper which is used to fill dependency my Fx module. Fx module will fill all dependencies here.
