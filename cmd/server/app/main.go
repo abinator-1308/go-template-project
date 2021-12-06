@@ -9,6 +9,8 @@ import (
 	"github.com/harishb2k/go-template-project/internal/handler"
 	"github.com/harishb2k/go-template-project/pkg/clients"
 	"github.com/harishb2k/go-template-project/pkg/core/bootstrap"
+	noop "github.com/harishb2k/go-template-project/pkg/database/composit"
+	"github.com/harishb2k/go-template-project/pkg/database/dynamodb"
 	"github.com/harishb2k/go-template-project/pkg/server"
 	"github.com/spf13/cobra"
 	"go.uber.org/fx"
@@ -35,6 +37,9 @@ func NewServerCommand() *cobra.Command {
 
 		// Client module - these are the HTTP clients which this service can call
 		clients.Module,
+
+		noop.CompositeDatabaseModule,
+		fx.Supply(&dynamodb.DynamoConfig{Region: "ap-south-1", Timeout: 1}),
 
 		// Basic dependency - underlying server, CrossFunc, configs for application
 		fx.Provide(server.NewServer),

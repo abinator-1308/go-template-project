@@ -7,6 +7,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/harishb2k/go-template-project/internal/handler"
 	"github.com/harishb2k/go-template-project/pkg/clients/jsonplaceholder"
+	"github.com/harishb2k/go-template-project/pkg/core/bootstrap"
 	mockJsonplaceholderClient "github.com/harishb2k/go-template-project/pkg/mocks/clients/jsonplaceholder"
 	"github.com/harishb2k/go-template-project/pkg/server"
 	"github.com/stretchr/testify/assert"
@@ -26,6 +27,7 @@ func TestServer(t *testing.T) {
 		// Register all HTTP API handlers
 		handler.RandomHandlerModule,
 		handler.UserHandlerModule,
+		bootstrap.Module,
 
 		// Basic dependency - underlying server, CrossFunc, configs for application
 		fx.Provide(server.NewServer),

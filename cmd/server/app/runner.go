@@ -13,7 +13,10 @@ func NewApplicationEntryPoint(
 		OnStart: func(context.Context) error {
 			go func() {
 				serverImpl.routes()
-				serverImpl.Start()
+				err := serverImpl.Start()
+				if err != nil {
+					panic(err)
+				}
 			}()
 			return nil
 		},

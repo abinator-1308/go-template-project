@@ -4,6 +4,7 @@ import (
 	"github.com/devlibx/gox-base"
 	"github.com/devlibx/gox-base/config"
 	"github.com/devlibx/gox-base/metrics"
+	"github.com/harishb2k/go-template-project/pkg/database"
 	"github.com/harishb2k/go-template-project/pkg/server"
 	"go.uber.org/fx"
 	"math/rand"
@@ -17,10 +18,11 @@ import (
 // 2. User Handler can get everything injected and all handlers can use those dependencies
 // 3. Since we return plain HTTP handler, it can be ued by any framework (however you can have Gin specific code here)
 var UserHandlerModule = fx.Options(
-	fx.Provide(func(cf gox.CrossFunction, appConfig config.App) *UserHandler {
+	fx.Provide(func(cf gox.CrossFunction, appConfig config.App, userDao database.UserDao) *UserHandler {
 		return &UserHandler{
 			appConfig: appConfig,
 			cf:        cf,
+			userDao:   userDao,
 		}
 	}),
 )
@@ -29,6 +31,7 @@ type UserHandler struct {
 	appConfig             config.App
 	cf                    gox.CrossFunction
 	addUserSuccessCounter metrics.Counter
+	userDao               database.UserDao
 }
 
 func (uh *UserHandler) Adduser() http.HandlerFunc {
@@ -42,8 +45,28 @@ func (uh *UserHandler) Adduser() http.HandlerFunc {
 		ginContext := server.GinContextFromHttpRequestVerified(r)
 		_ = ginContext
 
-		// Dummy sleep for Api
-		time.Sleep(time.Duration(rand.Intn(10)) * time.Millisecond)
+		// Expected request
+		type user struct {
+			ID   string `json:"id"`
+			Key  string `json:"key"`
+			Name string `json:"name"`
+		}
+		u := &user{}
+		err := ginContext.BindJSON(u)
+
+		if err == nil {
+			err = uh.userDao.Persist(r.Context(), &database.User{
+				ID:        u.ID,
+				Key:       u.Key,
+				Name:      u.Name,
+				CreatedAt: time.Now(),
+				UpdatedAt: time.Now(),
+			})
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+		}
 
 		// Do your logic
 		w.WriteHeader(http.StatusOK)
