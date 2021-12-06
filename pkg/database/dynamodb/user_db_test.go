@@ -17,9 +17,7 @@ func TestUserPersist(t *testing.T) {
 	app := fx.New(
 		fx.Provide(gox.NewNoOpCrossFunction),
 		DynamoServiceModule,
-		fx.Provide(NewUserDao),
 		fx.Populate(&userDao),
-		fx.Provide(func(impl *userDaoDynamoImpl) database.UserDao { return impl }),
 		fx.Supply(&DynamoConfig{
 			Region:  "ap-south-1",
 			Timeout: 1,

@@ -6,6 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/devlibx/gox-base/util"
 	dynamoOrm "github.com/guregu/dynamo"
+	"github.com/harishb2k/go-template-project/pkg/database"
 	"go.uber.org/fx"
 	"net/http"
 	"time"
@@ -25,6 +26,8 @@ type DynamoConfig struct {
 
 var DynamoServiceModule = fx.Options(
 	fx.Provide(func(dynamoConfig *DynamoConfig) (*Dynamo, error) { return buildDynamo(dynamoConfig) }),
+	fx.Provide(NewUserDao),
+	fx.Provide(func(impl *userDaoDynamoImpl) database.UserDao { return impl }),
 )
 
 func buildDynamo(dynamoConfig *DynamoConfig) (*Dynamo, error) {
