@@ -6,12 +6,16 @@ import (
 	"go.uber.org/fx"
 )
 
-// CompositeHandlerModule provides example of a random API you can add
-var CompositeHandlerModule = fx.Options(
-	fx.Provide(NewUserDao),
+// CompositeDatabaseModule provides works with more than 1 DAO layer. This allows to have more than one data source
+// and allows separating read and write to different data sources.
+// In this example we have DynamoDb and noop data sources configured. You can perform dual write, read from one and
+// write to other etc.
+var CompositeDatabaseModule = fx.Options(
+	fx.Provide(newUserDao),
 	fx.Provide(func(impl *userDaoCompositeImpl) database.UserDao { return impl }),
 )
 
+// input is a wrapper which is used to fill dependency my Fx module. Fx module will fill all dependencies here.
 type input struct {
 	fx.In
 	Dynamo database.UserDao `name:"dynamoImpl"`
@@ -24,42 +28,30 @@ type userDaoCompositeImpl struct {
 }
 
 func (u *userDaoCompositeImpl) Persist(ctx context.Context, user *database.User) error {
-	if err := u.dynamo.Persist(ctx, user); err == nil {
-		if err := u.noop.Persist(ctx, user); err == nil {
-			return nil
-		} else {
-			return err
-		}
-	} else {
-		return err
+	var err error
+	if err = u.dynamo.Persist(ctx, user); err == nil {
+		err = u.noop.Persist(ctx, user)
 	}
+	return err
 }
 
 func (u *userDaoCompositeImpl) Get(ctx context.Context, user *database.User) error {
-	if err := u.dynamo.Get(ctx, user); err == nil {
-		if err := u.noop.Get(ctx, user); err == nil {
-			return nil
-		} else {
-			return err
-		}
-	} else {
-		return err
+	var err error
+	if err = u.dynamo.Get(ctx, user); err == nil {
+		err = u.noop.Get(ctx, user)
 	}
+	return err
 }
 
 func (u *userDaoCompositeImpl) UpdateName(ctx context.Context, user *database.User) error {
-	if err := u.dynamo.UpdateName(ctx, user); err == nil {
-		if err := u.noop.UpdateName(ctx, user); err == nil {
-			return nil
-		} else {
-			return err
-		}
-	} else {
-		return err
+	var err error
+	if err = u.dynamo.UpdateName(ctx, user); err == nil {
+		err = u.noop.UpdateName(ctx, user)
 	}
+	return err
 }
 
-func NewUserDao(input input) (*userDaoCompositeImpl, error) {
+func newUserDao(input input) (*userDaoCompositeImpl, error) {
 	ud := &userDaoCompositeImpl{dynamo: input.Dynamo, noop: input.Noop}
 	return ud, nil
 }

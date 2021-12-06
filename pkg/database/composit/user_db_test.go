@@ -18,14 +18,11 @@ func TestUserPersist(t *testing.T) {
 	var userDao database.UserDao
 	app := fx.New(
 		fx.Provide(gox.NewNoOpCrossFunction),
-		dynamodb.DynamoServiceModule,
-		noop.NoopServiceModule,
-		CompositeHandlerModule,
+		dynamodb.DatabaseModule,
+		noop.DatabaseModule,
+		CompositeDatabaseModule,
 		fx.Populate(&userDao),
-		fx.Supply(&dynamodb.DynamoConfig{
-			Region:  "ap-south-1",
-			Timeout: 1,
-		}),
+		fx.Supply(&dynamodb.DynamoConfig{Region: "ap-south-1", Timeout: 1}),
 	)
 
 	ctx, cf := context.WithTimeout(context.TODO(), 5*time.Second)

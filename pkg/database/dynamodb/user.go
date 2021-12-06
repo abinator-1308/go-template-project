@@ -28,7 +28,7 @@ func (u *userDaoDynamoImpl) UpdateName(ctx context.Context, user *database.User)
 		RunWithContext(ctx)
 }
 
-func NewUserDao(dynamo *Dynamo) (*userDaoDynamoImpl, error) {
+func newUserDao(dynamo *Dynamo) (*userDaoDynamoImpl, error) {
 	ud := &userDaoDynamoImpl{
 		session:  dynamo.Session,
 		dynamoDb: dynamo.DynamoDb,
