@@ -1,4 +1,4 @@
-package dynamodb
+package noop
 
 import (
 	"context"
@@ -6,6 +6,8 @@ import (
 	"github.com/devlibx/gox-base"
 	"github.com/google/uuid"
 	"github.com/harishb2k/go-template-project/pkg/database"
+	"github.com/harishb2k/go-template-project/pkg/database/dynamodb"
+	"github.com/harishb2k/go-template-project/pkg/database/noop"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/fx"
 	"testing"
@@ -16,9 +18,11 @@ func TestUserPersist(t *testing.T) {
 	var userDao database.UserDao
 	app := fx.New(
 		fx.Provide(gox.NewNoOpCrossFunction),
-		DynamoServiceModule,
+		dynamodb.DynamoServiceModule,
+		noop.NoopServiceModule,
+		CompositeHandlerModule,
 		fx.Populate(&userDao),
-		fx.Supply(&DynamoConfig{
+		fx.Supply(&dynamodb.DynamoConfig{
 			Region:  "ap-south-1",
 			Timeout: 1,
 		}),
