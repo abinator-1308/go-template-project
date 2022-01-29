@@ -7,29 +7,29 @@ import (
 	"github.com/harishb2k/go-template-project/pkg/database"
 )
 
-type userDaoDynamoImpl struct {
+type UserRepository struct {
 	session  *session.Session
 	dynamoDb *dynamoOrm.DB
 	table    dynamoOrm.Table
 }
 
-func (u *userDaoDynamoImpl) Persist(ctx context.Context, user *database.User) error {
+func (u *UserRepository) Persist(ctx context.Context, user *database.User) error {
 	return u.table.Put(dynamoOrm.AWSEncoding(user)).RunWithContext(ctx)
 }
 
-func (u *userDaoDynamoImpl) Get(ctx context.Context, user *database.User) error {
+func (u *UserRepository) Get(ctx context.Context, user *database.User) error {
 	return u.table.Get("id", user.ID).Range("key", dynamoOrm.Equal, user.Key).OneWithContext(ctx, dynamoOrm.AWSEncoding(user))
 }
 
-func (u *userDaoDynamoImpl) UpdateName(ctx context.Context, user *database.User) error {
+func (u *UserRepository) UpdateName(ctx context.Context, user *database.User) error {
 	return u.table.Update("id", user.ID).
 		Range("key", user.Key).
 		Set("name", user.Name).
 		RunWithContext(ctx)
 }
 
-func newUserDao(dynamo *Dynamo) (*userDaoDynamoImpl, error) {
-	ud := &userDaoDynamoImpl{
+func NewUserRepository(dynamo *Dynamo) (*UserRepository, error) {
+	ud := &UserRepository{
 		session:  dynamo.Session,
 		dynamoDb: dynamo.DynamoDb,
 	}

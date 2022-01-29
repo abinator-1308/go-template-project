@@ -27,7 +27,7 @@ func TestUserDynamoOperations(t *testing.T) {
 	assert.NoError(t, err, "failed to setup app")
 
 	userId := uuid.NewString()
-	userDao, err := newUserDao(dynamo)
+	userDao, err := NewUserRepository(dynamo)
 	assert.NoError(t, err, "failed to setup table")
 
 	err = userDao.Persist(context.Background(), &database.User{
