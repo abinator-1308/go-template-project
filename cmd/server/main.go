@@ -24,6 +24,7 @@ func main() {
 	app := fx.New(
 		fx.Provide(NewCrossFunctionProvider),
 
+		// Integration module to get all clients
 		clients.IntegrationModule,
 		fx.Populate(&jsonPlaceholderClient),
 
