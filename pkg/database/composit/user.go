@@ -22,8 +22,8 @@ var CompositeDatabaseModule = fx.Options(
 // input is a wrapper which is used to fill dependency my Fx module. Fx module will fill all dependencies here.
 type input struct {
 	fx.In
-	Dynamo *dynamodb.UserRepository `name:"dynamoImpl"`
-	Noop   *noop.UserRepository     `name:"noopImpl"`
+	Dynamo *dynamodb.UserRepository
+	Noop   *noop.UserRepository
 }
 
 type UserRepository struct {

@@ -26,9 +26,6 @@ type DynamoConfig struct {
 var DatabaseModule = fx.Options(
 	fx.Provide(func(dynamoConfig *DynamoConfig) (*Dynamo, error) { return buildDynamo(dynamoConfig) }),
 	fx.Provide(NewUserRepository),
-	fx.Provide(fx.Annotated{Name: "dynamoImpl", Target: func(impl *UserRepository) *UserRepository {
-		return impl
-	}}),
 )
 
 func buildDynamo(dynamoConfig *DynamoConfig) (*Dynamo, error) {

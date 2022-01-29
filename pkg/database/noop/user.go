@@ -8,9 +8,6 @@ import (
 
 var DatabaseModule = fx.Options(
 	fx.Provide(NewUserRepository),
-	fx.Provide(fx.Annotated{Name: "noopImpl", Target: func(impl *UserRepository) *UserRepository {
-		return impl
-	}}),
 )
 
 type UserRepository struct {
