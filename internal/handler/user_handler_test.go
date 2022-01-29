@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/devlibx/gox-base"
 	"github.com/gin-gonic/gin"
 	immemory "github.com/harishb2k/go-template-project/pkg/database/inmemory"
@@ -29,6 +30,9 @@ func TestAddUser(t *testing.T) {
 	r.POST("/users", func(c *gin.Context) {
 		server.EnsureGinContextWrapper(uh.Adduser()).ServeHTTP(c.Writer, c.Request)
 	})
+	r.GET("/users", func(c *gin.Context) {
+		server.EnsureGinContextWrapper(uh.GetUser()).ServeHTTP(c.Writer, c.Request)
+	})
 
 	// Make a dummy request and see everything is working
 	req := httptest.NewRequest(http.MethodPost, "/users", strings.NewReader(`{"id": "1", "key": "2", "name": "3"}`))
@@ -37,4 +41,13 @@ func TestAddUser(t *testing.T) {
 	// Trigger serve api to test end to end
 	r.ServeHTTP(w, req)
 	assert.Equal(t, 200, w.Code)
+
+	// Make a get request and see everything is working
+	req = httptest.NewRequest(http.MethodGet, "/users", nil)
+	w = httptest.NewRecorder()
+
+	// Trigger serve api to test end to end
+	r.ServeHTTP(w, req)
+	assert.Equal(t, 200, w.Code)
+	fmt.Println(w.Body)
 }
