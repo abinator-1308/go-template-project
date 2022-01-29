@@ -42,15 +42,15 @@ func TestUserPersist(t *testing.T) {
 	})
 	assert.NoError(t, err)
 
-	fromDb := &database.User{ID: userId, Key: "harish"}
-	err = userDao.Get(ctx, fromDb)
+	fromDb, err := userDao.Get(ctx, &database.User{ID: userId, Key: "harish"})
 	assert.NoError(t, err)
 	assert.Equal(t, "name_1", fromDb.Name)
 
 	userWithNewName := &database.User{ID: userId, Key: "harish", Name: "name_2"}
 	err = userDao.UpdateName(ctx, userWithNewName)
 	assert.NoError(t, err)
-	err = userDao.Get(ctx, userWithNewName)
+
+	userWithNewName, err = userDao.Get(ctx, userWithNewName)
 	assert.NoError(t, err)
 	assert.Equal(t, "name_2", userWithNewName.Name)
 }

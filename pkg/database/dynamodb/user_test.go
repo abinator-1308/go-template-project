@@ -39,8 +39,7 @@ func TestUserDynamoOperations(t *testing.T) {
 	})
 	assert.NoError(t, err, "failed to save to db")
 
-	fromDb := &database.User{ID: userId, Key: "harish"}
-	err = userDao.Get(context.Background(), fromDb)
+	fromDb, err := userDao.Get(context.Background(), &database.User{ID: userId, Key: "harish"})
 	assert.NoError(t, err, "failed to get from db")
 	assert.Equal(t, "name_1", fromDb.Name)
 }
