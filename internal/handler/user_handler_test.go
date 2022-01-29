@@ -23,7 +23,7 @@ func TestAddUser(t *testing.T) {
 		userDao: userDao,
 	}
 
-	// Setup a Gin router to test our API
+	// Set up a Gin router to test our API
 	gin.SetMode(gin.TestMode)
 	r := gin.Default()
 	r.Use(server.GinContextToContextMiddleware())
