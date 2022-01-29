@@ -12,7 +12,15 @@ var Module = fx.Options(
 	fx.Provide(jsonplaceholder.NewJsonPlaceHolderClient),
 )
 
+// IntegrationJsonPlaceholderModule is a completely wired module for ease of use in application. If you want everything
+// wired-up automatically then use this
 var IntegrationJsonPlaceholderModule = fx.Options(
 	fx.Provide(jsonplaceholder.NewJsonPlaceHolderClient),
 	fx.Provide(func(client *jsonplaceholder.Client) JsonPlaceholderClient { return client }),
+)
+
+// IntegrationModule is a completely wired module for ease of use in application. If you want everything
+// wired-up automatically then use this
+var IntegrationModule = fx.Options(
+	IntegrationJsonPlaceholderModule,
 )

@@ -24,7 +24,7 @@ func main() {
 	app := fx.New(
 		fx.Provide(NewCrossFunctionProvider),
 
-		clients.IntegrationJsonPlaceholderModule,
+		clients.IntegrationModule,
 		fx.Populate(&jsonPlaceholderClient),
 
 		// Integration module provides some basic capabilities e.g. messaging, metric, and http support
