@@ -39,12 +39,16 @@ func (u *UserRepository) Persist(ctx context.Context, user *database.User) error
 	return err
 }
 
-func (u *UserRepository) Get(ctx context.Context, user *database.User) error {
+func (u *UserRepository) Get(ctx context.Context, user *database.User) (*database.User, error) {
 	var err error
-	if err = u.dynamo.Get(ctx, user); err == nil {
-		err = u.noop.Get(ctx, user)
+	var found *database.User
+	if found, err = u.dynamo.Get(ctx, user); err == nil {
+		return found, nil
 	}
-	return err
+	if found, err = u.noop.Get(ctx, user); err == nil {
+		return found, err
+	}
+	return nil, err
 }
 
 func (u *UserRepository) UpdateName(ctx context.Context, user *database.User) error {

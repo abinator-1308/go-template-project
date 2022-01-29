@@ -5,6 +5,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	dynamoOrm "github.com/guregu/dynamo"
 	"github.com/harishb2k/go-template-project/pkg/database"
+	"github.com/pkg/errors"
 )
 
 type UserRepository struct {
@@ -17,8 +18,9 @@ func (u *UserRepository) Persist(ctx context.Context, user *database.User) error
 	return u.table.Put(dynamoOrm.AWSEncoding(user)).RunWithContext(ctx)
 }
 
-func (u *UserRepository) Get(ctx context.Context, user *database.User) error {
-	return u.table.Get("id", user.ID).Range("key", dynamoOrm.Equal, user.Key).OneWithContext(ctx, dynamoOrm.AWSEncoding(user))
+func (u *UserRepository) Get(ctx context.Context, user *database.User) (*database.User, error) {
+	err := u.table.Get("id", user.ID).Range("key", dynamoOrm.Equal, user.Key).OneWithContext(ctx, dynamoOrm.AWSEncoding(user))
+	return user, errors.Wrap(err, "error in fetching user")
 }
 
 func (u *UserRepository) UpdateName(ctx context.Context, user *database.User) error {

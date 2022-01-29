@@ -20,8 +20,8 @@ func (u *UserRepository) Persist(ctx context.Context, user *database.User) error
 	return nil
 }
 
-func (u *UserRepository) Get(ctx context.Context, user *database.User) error {
-	return nil
+func (u *UserRepository) Get(ctx context.Context, user *database.User) (*database.User, error) {
+	return nil, nil
 }
 
 func (u *UserRepository) UpdateName(ctx context.Context, user *database.User) error {
