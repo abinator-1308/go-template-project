@@ -8,6 +8,7 @@ require (
 	github.com/devlibx/gox-http v0.0.65
 	github.com/devlibx/gox-messaging v0.0.50
 	github.com/devlibx/gox-metrics v0.0.12
+	github.com/golang/mock v1.6.0
 	github.com/google/uuid v1.3.0
 	github.com/guregu/dynamo v1.11.0
 	github.com/opentracing/opentracing-go v1.2.0
