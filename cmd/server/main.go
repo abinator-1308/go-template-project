@@ -27,12 +27,13 @@ func main() {
 		clients.IntegrationJsonPlaceholderModule,
 		fx.Populate(&jsonPlaceholderClient),
 
-		fx.Provide(bootstrap.NewMetricService),
+		// Integration module provides some basic capabilities e.g. messaging, metric, and http support
+		bootstrap.IntegrationModule,
 		fx.Supply(appConfig.App),
-		fx.Supply(&appConfig.MetricConfig), // For messaging (if you don't use messaging pass a object with metric config enabled = false)
-
-		fx.Provide(bootstrap.NewGoxHttpBuilder),
+		fx.Supply(&appConfig.MessagingConfig),
+		fx.Supply(&appConfig.MetricConfig),
 		fx.Supply(&appConfig.ServerConfig),
+
 	)
 	err = app.Start(context.Background())
 	if err != nil {
