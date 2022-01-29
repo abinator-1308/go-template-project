@@ -1,1 +1,0 @@
-Documentation goes in this folder. Maybe some design doc etc.

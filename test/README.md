@@ -1,1 +1,0 @@
-Functional tests or may be integration tests go here
