@@ -1,4 +1,4 @@
-package composit
+package composite
 
 import (
 	"context"
@@ -8,11 +8,11 @@ import (
 	"go.uber.org/fx"
 )
 
-// CompositeDatabaseModule provides works with more than 1 DAO layer. This allows to have more than one data source
+// DatabaseModule provides works with more than 1 DAO layer. This allows to have more than one data source
 // and allows separating read and write to different data sources.
 // In this example we have DynamoDb and noop data sources configured. You can perform dual write, read from one and
 // write to other etc.
-var CompositeDatabaseModule = fx.Options(
+var DatabaseModule = fx.Options(
 	fx.Provide(NewUserRepository),
 	// fx.Provide(func(impl *UserRepository) *UserRepository { return impl }),
 	dynamodb.DatabaseModule,

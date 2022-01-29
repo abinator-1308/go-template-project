@@ -1,4 +1,4 @@
-package composit
+package composite
 
 import (
 	"context"
@@ -22,7 +22,7 @@ func TestUserPersist(t *testing.T) {
 	var userDao *UserRepository
 	app := fx.New(
 		fx.Provide(gox.NewNoOpCrossFunction),
-		CompositeDatabaseModule,
+		DatabaseModule,
 		fx.Populate(&userDao),
 		fx.Supply(&dynamodb.DynamoConfig{Region: "ap-south-1", Timeout: 1}),
 	)

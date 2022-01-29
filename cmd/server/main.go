@@ -33,7 +33,6 @@ func main() {
 		fx.Supply(&appConfig.MessagingConfig),
 		fx.Supply(&appConfig.MetricConfig),
 		fx.Supply(&appConfig.ServerConfig),
-
 	)
 	err = app.Start(context.Background())
 	if err != nil {
