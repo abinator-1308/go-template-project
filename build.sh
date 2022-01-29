@@ -1,4 +1,6 @@
 go mod tidy
 go generate ./...
 go fmt ./...
-INCLUDE_DYNAMO_TESTS=true go  test ./... -v
+
+export INCLUDE_DYNAMO_TESTS=true
+go  test ./... -v
