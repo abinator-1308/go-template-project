@@ -43,7 +43,7 @@ func NewApplicationEntryPoint(
 	return ""
 }
 
-func Main(ctx context.Context, configLocation string) {
+func Main(ctx context.Context, configLocation string) *config.ApplicationConfig {
 	appConfig := config.ApplicationConfig{}
 	err := serialization.ReadYaml(configLocation, &appConfig)
 	if err != nil {
@@ -74,6 +74,8 @@ func Main(ctx context.Context, configLocation string) {
 	if err != nil {
 		panic(err)
 	}
+
+	return &appConfig
 }
 
 func NewCrossFunctionProvider(metric metrics.Scope) gox.CrossFunction {

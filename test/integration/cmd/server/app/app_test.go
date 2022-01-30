@@ -2,14 +2,14 @@ package app
 
 import (
 	"context"
+	"fmt"
 	"github.com/devlibx/gox-base/serialization"
 	"github.com/go-resty/resty/v2"
 	"github.com/google/uuid"
 	app2 "github.com/harishb2k/go-template-project/cmd/server/app"
 	"github.com/harishb2k/go-template-project/pkg/database"
-	"github.com/harishb2k/go-template-project/pkg/database/dynamodb"
 	"github.com/stretchr/testify/assert"
-	"go.uber.org/fx"
+	"net/http"
 	"os"
 	"testing"
 	"time"
@@ -20,47 +20,35 @@ func TestApp(t *testing.T) {
 		t.Skip("Skipping integration tests")
 	}
 
-	dc := &dynamodb.DynamoConfig{Region: "ap-south-1"}
-	var dynamo *dynamodb.Dynamo
-	var ur *dynamodb.UserRepository
-	app := fx.New(
-		dynamodb.DatabaseModule,
-		fx.Supply(dc),
-		fx.Populate(&dynamo, &ur),
-	)
-	err := app.Start(context.Background())
-	assert.NoError(t, err, "failed to setup app")
-
 	userId := uuid.NewString()
 	key := uuid.NewString()
-	assert.NoError(t, err, "failed to setup table")
 
-	err = ur.Persist(context.Background(), &database.User{
-		ID:        userId,
-		Key:       key,
-		Name:      "name_1",
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-	})
-	assert.NoError(t, err, "failed to save to db")
+	// Run the main server
+	ctx, cancelFunc := context.WithTimeout(context.Background(), 10*time.Second)
+	appConfig := app2.Main(ctx, "../../../../../config/app.yaml")
 
-	ctx := context.Background()
-	ctxWithTimeout, cancelFunc := context.WithTimeout(ctx, 10*time.Second)
-	app2.Main(ctxWithTimeout, "../../../../../config/app.yaml")
-
+	// Setup - call server with
 	client := resty.New()
-	client.SetHostURL("http://localhost:8090/ser")
+	client.SetHostURL(fmt.Sprintf("http://localhost:%d/%s", appConfig.App.HttpPort, appConfig.App.AppName))
 
-	response, err := client.R().
-		Get("/v1/users/" + userId + "/" + key)
+	// First store the new row
+	payload := fmt.Sprintf(`{"id": "%s", "key": "%s", "name": "user_random_1"}`, userId, key)
+	response, err := client.R().SetBody(payload).Post("/v1/users/")
+	assert.NoError(t, err)
+	assert.Equal(t, http.StatusOK, response.StatusCode())
+
+	// Get the data
+	response, err = client.R().Get("/v1/users/" + userId + "/" + key)
 	assert.NoError(t, err)
 
+	// Check data coming from server
 	userFormServer := &database.User{}
 	err = serialization.JsonBytesToObject(response.Body(), userFormServer)
 	assert.NoError(t, err)
 	assert.Equal(t, userId, userFormServer.ID)
-	assert.Equal(t, "name_1", userFormServer.Name)
+	assert.Equal(t, "user_random_1", userFormServer.Name)
 
+	// We are good - lets close it
 	cancelFunc()
-	<-ctxWithTimeout.Done()
+	<-ctx.Done()
 }
