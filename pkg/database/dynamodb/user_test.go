@@ -2,6 +2,7 @@ package dynamodb
 
 import (
 	"context"
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/harishb2k/go-template-project/pkg/database"
 	"github.com/stretchr/testify/assert"
@@ -42,4 +43,5 @@ func TestUserDynamoOperations(t *testing.T) {
 	fromDb, err := userDao.Get(context.Background(), &database.User{ID: userId, Key: "harish"})
 	assert.NoError(t, err, "failed to get from db")
 	assert.Equal(t, "name_1", fromDb.Name)
+	fmt.Println(fromDb)
 }

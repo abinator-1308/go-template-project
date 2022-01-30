@@ -3,6 +3,9 @@ app:
   http_port: 8090
   env: stage
 
+ddb:
+  region: ap-south-1
+
 metric:
   enabled: true
   prefix: "ser"

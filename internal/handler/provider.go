@@ -23,12 +23,12 @@ var UserHandlerModule = fx.Options(
 			userDao:   userDao,
 		}
 	}),
-	fx.Provide(func(repository *dynamodb.UserRepository) common.UserStore { return repository }),
 )
 
 // IntegrationModule is full wired module to be used in application
 var IntegrationModule = fx.Options(
 	UserHandlerModule,
+	fx.Provide(func(repository *dynamodb.UserRepository) common.UserStore { return repository }),
 )
 
 // -------------------------------------- Testing Modules --------------------------------------------------------------
@@ -36,8 +36,8 @@ var IntegrationModule = fx.Options(
 // TestModule provides all the basic dependencies for testing handlers
 var TestModule = fx.Options(
 	fx.Provide(memory.NewUserRepository),
-	fx.Provide(func(repository *memory.UserRepository) common.UserStore { return repository }),
 	fx.Provide(gox.NewNoOpCrossFunction),
+	fx.Provide(func(repository *memory.UserRepository) common.UserStore { return repository }),
 	fx.Supply(config.App{}),
 	fx.Provide(func() *gin.Engine {
 		gin.SetMode(gin.TestMode)
