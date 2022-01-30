@@ -22,11 +22,7 @@ func TestAddUser(t *testing.T) {
 
 	// Get the user handler
 	var uh *UserHandler
-	app := fx.New(
-		TestUserHandlerModule,
-		fx.Populate(&uh),
-	)
-	err := app.Start(context.Background())
+	err := fx.New(TestUserHandlerModule, fx.Populate(&uh)).Start(context.Background())
 	assert.NoError(t, err)
 
 	// Setup dummy end-point to test handler
