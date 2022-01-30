@@ -1,12 +1,15 @@
 package handler
 
 import (
+	"context"
 	"fmt"
-	"github.com/devlibx/gox-base"
+	"github.com/devlibx/gox-base/serialization"
 	"github.com/gin-gonic/gin"
-	immemory "github.com/harishb2k/go-template-project/pkg/database/inmemory"
+	"github.com/google/uuid"
+	"github.com/harishb2k/go-template-project/pkg/database"
 	"github.com/harishb2k/go-template-project/pkg/server"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/fx"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -14,28 +17,30 @@ import (
 )
 
 func TestAddUser(t *testing.T) {
-	userDao, err := immemory.NewUserRepository()
+	// Set up a Gin router to test our API
+	r := setupGinForTesting()
+
+	// Get the user handler
+	var uh *UserHandler
+	app := fx.New(
+		TestUserHandlerModule,
+		fx.Populate(&uh),
+	)
+	err := app.Start(context.Background())
 	assert.NoError(t, err)
 
-	// Setup a user handler
-	uh := UserHandler{
-		cf:      gox.NewNoOpCrossFunction(),
-		userDao: userDao,
-	}
+	// Setup dummy end-point to test handler
+	id := uuid.NewString()
+	key := uuid.NewString()
 
-	// Set up a Gin router to test our API
-	gin.SetMode(gin.TestMode)
-	r := gin.Default()
-	r.Use(server.GinContextToContextMiddleware())
 	r.POST("/users", func(c *gin.Context) {
 		server.EnsureGinContextWrapper(uh.Adduser()).ServeHTTP(c.Writer, c.Request)
 	})
-	r.GET("/users", func(c *gin.Context) {
+	r.GET("/users/:id/:key", func(c *gin.Context) {
 		server.EnsureGinContextWrapper(uh.GetUser()).ServeHTTP(c.Writer, c.Request)
 	})
 
-	// Make a dummy request and see everything is working
-	req := httptest.NewRequest(http.MethodPost, "/users", strings.NewReader(`{"id": "1", "key": "2", "name": "3"}`))
+	req := httptest.NewRequest(http.MethodPost, "/users", strings.NewReader(`{"id": "`+id+`", "key": "`+key+`", "name": "3"}`))
 	w := httptest.NewRecorder()
 
 	// Trigger serve api to test end to end
@@ -43,11 +48,17 @@ func TestAddUser(t *testing.T) {
 	assert.Equal(t, 200, w.Code)
 
 	// Make a get request and see everything is working
-	req = httptest.NewRequest(http.MethodGet, "/users", nil)
+	req = httptest.NewRequest(http.MethodGet, "/users/"+id+"/"+key, nil)
 	w = httptest.NewRecorder()
 
 	// Trigger serve api to test end to end
 	r.ServeHTTP(w, req)
 	assert.Equal(t, 200, w.Code)
 	fmt.Println(w.Body)
+	u := &database.User{}
+	err = serialization.JsonBytesToObject(w.Body.Bytes(), u)
+	assert.NoError(t, err)
+	assert.Equal(t, id, u.ID)
+	assert.Equal(t, key, u.Key)
+	assert.Equal(t, "3", u.Name)
 }

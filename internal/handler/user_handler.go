@@ -8,7 +8,6 @@ import (
 	"github.com/harishb2k/go-template-project/pkg/database"
 	"github.com/harishb2k/go-template-project/pkg/server"
 	"go.uber.org/fx"
-	"math/rand"
 	"net/http"
 	"sync"
 	"time"
@@ -78,16 +77,14 @@ func (uh *UserHandler) Adduser() http.HandlerFunc {
 
 func (uh *UserHandler) GetUser() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
-		// Get gin context if you want to use
 		ginContext := server.GinContextFromHttpRequestVerified(r)
-		_ = ginContext
+		id := ginContext.Param("id")
+		key := ginContext.Param("key")
 
-		// Dummy sleep for Api
-		time.Sleep(time.Duration(rand.Intn(10)) * time.Millisecond)
-
-		// Do your logic
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte("Ok"))
+		if user, err := uh.userDao.Get(r.Context(), &database.User{ID: id, Key: key}); err == nil {
+			ginContext.JSON(http.StatusOK, user)
+		} else {
+			w.WriteHeader(http.StatusInternalServerError)
+		}
 	}
 }

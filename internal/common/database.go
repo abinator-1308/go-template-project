@@ -7,4 +7,5 @@ import (
 
 type UserStore interface {
 	Persist(ctx context.Context, user *database.User) error
+	Get(ctx context.Context, user *database.User) (*database.User, error)
 }
