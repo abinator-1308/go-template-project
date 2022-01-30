@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/harishb2k/go-template-project/pkg/database"
 	"github.com/harishb2k/go-template-project/pkg/server"
-	testing2 "github.com/harishb2k/go-template-project/pkg/testing"
+	commonTesting "github.com/harishb2k/go-template-project/pkg/testing"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/fx"
 	"net/http"
@@ -21,7 +21,11 @@ func TestAddUser(t *testing.T) {
 	// Get the user handler
 	var uh *UserHandler
 	var r *gin.Engine
-	err := fx.New(testing2.TestCommonModule, TestUserHandlerModule, fx.Populate(&uh, &r)).Start(context.Background())
+	err := fx.New(
+		commonTesting.TestCommonModule,
+		TestUserHandlerModule,
+		fx.Populate(&uh, &r),
+	).Start(context.Background())
 	assert.NoError(t, err)
 
 	// Setup dummy end-point to test handler
