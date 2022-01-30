@@ -8,6 +8,7 @@ import (
 	"go.uber.org/fx"
 )
 
+// TestModule provides all the basic dependencies for testing handlers
 var TestModule = fx.Options(
 	fx.Provide(memory.NewUserRepository),
 	fx.Provide(func(repository *memory.UserRepository) common.UserStore { return repository }),
@@ -15,6 +16,7 @@ var TestModule = fx.Options(
 	fx.Supply(config.App{}),
 )
 
+// TestUserHandlerModule defines all the dependencies needed to test a user handler
 var TestUserHandlerModule = fx.Options(
 	UserHandlerModule,
 	TestModule,
