@@ -16,20 +16,16 @@ import (
 
 type None string
 
-var Module = fx.Options(
-	fx.Invoke(NewApplicationEntryPoint),
-)
-
-func NewApplicationEntryPoint(
-	lc fx.Lifecycle,
-	serverImpl ServerImpl,
-) None {
+// NewApplicationEntryPoint is the main entry point function - which will start the server
+func NewApplicationEntryPoint(lc fx.Lifecycle, serverImpl ServerImpl) None {
 	lc.Append(fx.Hook{
 		OnStart: func(context.Context) error {
 			go func() {
+				// First setup routs
 				serverImpl.routes()
-				err := serverImpl.Start()
-				if err != nil {
+
+				// Start server
+				if err := serverImpl.Start(); err != nil {
 					panic(err)
 				}
 			}()
@@ -43,6 +39,7 @@ func NewApplicationEntryPoint(
 	return ""
 }
 
+// MainWithConfigAsString is used in tests where we have some fixed config
 func MainWithConfigAsString(ctx context.Context, configAsString string) *config.ApplicationConfig {
 	appConfig := config.ApplicationConfig{}
 	err := serialization.ReadYamlFromString(configAsString, &appConfig)
@@ -52,10 +49,11 @@ func MainWithConfigAsString(ctx context.Context, configAsString string) *config.
 	return Main(ctx, &appConfig)
 }
 
+// Main functions starts the app
 func Main(ctx context.Context, appConfig *config.ApplicationConfig) *config.ApplicationConfig {
 	app := fx.New(
 		fx.Provide(NewCrossFunctionProvider),
-		Module,
+		fx.Invoke(NewApplicationEntryPoint),
 
 		// Setup server
 		fx.Provide(server.NewServer),
