@@ -17,12 +17,10 @@ import (
 )
 
 func TestAddUser(t *testing.T) {
-	// Set up a Gin router to test our API
-	r := setupGinForTesting()
-
 	// Get the user handler
 	var uh *UserHandler
-	err := fx.New(TestUserHandlerModule, fx.Populate(&uh)).Start(context.Background())
+	var r *gin.Engine
+	err := fx.New(TestUserHandlerModule, fx.Populate(&uh, &r)).Start(context.Background())
 	assert.NoError(t, err)
 
 	// Setup dummy end-point to test handler
