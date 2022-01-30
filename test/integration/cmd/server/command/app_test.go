@@ -1,4 +1,4 @@
-package app
+package command
 
 import (
 	"context"
@@ -6,9 +6,10 @@ import (
 	"github.com/devlibx/gox-base/serialization"
 	"github.com/go-resty/resty/v2"
 	"github.com/google/uuid"
-	app2 "github.com/harishb2k/go-template-project/cmd/server/app"
+	app2 "github.com/harishb2k/go-template-project/cmd/server/command"
 	"github.com/harishb2k/go-template-project/pkg/database"
 	"github.com/stretchr/testify/assert"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"testing"
@@ -25,6 +26,9 @@ func TestApp(t *testing.T) {
 
 	// Run the main server
 	ctx, cancelFunc := context.WithTimeout(context.Background(), 10*time.Second)
+	fmt.Println(os.Getwd())
+	data, err := ioutil.ReadFile("../../../../../config/app.yaml")
+	fmt.Println(string(data))
 	appConfig := app2.Main(ctx, "../../../../../config/app.yaml")
 
 	// Setup - call server with

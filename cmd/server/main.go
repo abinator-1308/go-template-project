@@ -2,11 +2,11 @@ package main
 
 import (
 	"context"
-	app2 "github.com/harishb2k/go-template-project/cmd/server/app"
+	"github.com/harishb2k/go-template-project/cmd/server/command"
 )
 
 func main() {
 	ctx := context.Background()
-	app2.Main(ctx, "./config/app.yaml")
+	command.Main(ctx, "./config/app.yaml")
 	<-ctx.Done()
 }
