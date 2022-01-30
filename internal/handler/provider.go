@@ -36,7 +36,6 @@ var IntegrationModule = fx.Options(
 // TestModule provides all the basic dependencies for testing handlers
 var TestModule = fx.Options(
 	fx.Provide(memory.NewUserRepository),
-	fx.Provide(gox.NewNoOpCrossFunction),
 	fx.Provide(func(repository *memory.UserRepository) common.UserStore { return repository }),
 	fx.Supply(config.App{}),
 	fx.Provide(func() *gin.Engine {
