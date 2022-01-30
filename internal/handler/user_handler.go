@@ -4,8 +4,6 @@ import (
 	"github.com/devlibx/gox-base"
 	"github.com/devlibx/gox-base/config"
 	"github.com/devlibx/gox-base/metrics"
-	messaging "github.com/devlibx/gox-messaging"
-	"github.com/google/uuid"
 	"github.com/harishb2k/go-template-project/internal/common"
 	"github.com/harishb2k/go-template-project/pkg/bootstrap"
 	"github.com/harishb2k/go-template-project/pkg/database"
@@ -21,7 +19,6 @@ type UserHandler struct {
 	addUserSuccessCounter metrics.Counter
 	userDao               common.UserStore
 	messagingFactory      bootstrap.MessagingFactory
-	producer              messaging.Producer
 }
 
 func (uh *UserHandler) Adduser() http.HandlerFunc {
@@ -29,7 +26,6 @@ func (uh *UserHandler) Adduser() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		initOnce.Do(func() {
 			uh.addUserSuccessCounter = uh.cf.Metric().Counter("handler__add_user_success")
-			uh.producer, _ = uh.messagingFactory.GetProducer("some-topic")
 		})
 
 		// Get gin context if you want to use
@@ -63,11 +59,6 @@ func (uh *UserHandler) Adduser() http.HandlerFunc {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte("Ok"))
 		uh.addUserSuccessCounter.Inc(1)
-
-		uh.producer.Send(r.Context(), &messaging.Message{
-			Key:     uuid.NewString(),
-			Payload: `{"message": "ok"}`,
-		})
 	}
 }
 

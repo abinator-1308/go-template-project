@@ -2,18 +2,23 @@ package bootstrap
 
 import (
 	"context"
+	goxMessaging "github.com/devlibx/gox-messaging"
 	"go.uber.org/fx"
 )
 
 type None string
 
-func NewBootstrapStartup(lc fx.Lifecycle, factory MessagingFactory) None {
+func NewBootstrapStartup(lc fx.Lifecycle, messagingFactory MessagingFactory, configuration *goxMessaging.Configuration) None {
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
-			return nil
+			if configuration.Enabled {
+				return messagingFactory.Start(*configuration)
+			} else {
+				return nil
+			}
 		},
 		OnStop: func(ctx context.Context) error {
-			return nil
+			return messagingFactory.Stop()
 		},
 	})
 	return ""
