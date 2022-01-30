@@ -43,13 +43,16 @@ func NewApplicationEntryPoint(
 	return ""
 }
 
-func Main(ctx context.Context, configLocation string) *config.ApplicationConfig {
+func MainWithConfigAsString(ctx context.Context, configAsString string) *config.ApplicationConfig {
 	appConfig := config.ApplicationConfig{}
-	err := serialization.ReadYaml(configLocation, &appConfig)
+	err := serialization.ReadYamlFromString(configAsString, &appConfig)
 	if err != nil {
 		panic(err)
 	}
+	return Main(ctx, &appConfig)
+}
 
+func Main(ctx context.Context, appConfig *config.ApplicationConfig) *config.ApplicationConfig {
 	app := fx.New(
 		fx.Provide(NewCrossFunctionProvider),
 		Module,
@@ -70,12 +73,12 @@ func Main(ctx context.Context, configLocation string) *config.ApplicationConfig 
 		fx.Supply(&appConfig.DynamoConfig),
 	)
 
-	err = app.Start(ctx)
+	err := app.Start(ctx)
 	if err != nil {
 		panic(err)
 	}
 
-	return &appConfig
+	return appConfig
 }
 
 func NewCrossFunctionProvider(metric metrics.Scope) gox.CrossFunction {
