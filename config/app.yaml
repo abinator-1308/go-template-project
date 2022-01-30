@@ -51,9 +51,10 @@ server_config:
       concurrency: 3
 
 messaging_config:
-  enabled: false
+  enabled: true
   producers:
     some-topic:
+      enabled: true
       type: kafka
       topic: some-topic
       endpoint: localhost:9092
@@ -61,3 +62,11 @@ messaging_config:
       message_timeout_ms: 1000
       properties:
         acks: all
+  consumers:
+    some-topic:
+      enabled: true
+      type: kafka
+      topic: some-topic
+      endpoint: localhost:9092
+      properties:
+        group.id: randome_group_id

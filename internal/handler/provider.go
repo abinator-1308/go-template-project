@@ -5,6 +5,7 @@ import (
 	"github.com/devlibx/gox-base/config"
 	"github.com/gin-gonic/gin"
 	"github.com/harishb2k/go-template-project/internal/common"
+	"github.com/harishb2k/go-template-project/pkg/bootstrap"
 	"github.com/harishb2k/go-template-project/pkg/database/dynamodb"
 	memory "github.com/harishb2k/go-template-project/pkg/database/inmemory"
 	"github.com/harishb2k/go-template-project/pkg/server"
@@ -16,11 +17,12 @@ import (
 // 2. User Handler can get everything injected and all handlers can use those dependencies
 // 3. Since we return plain HTTP handler, it can be ued by any framework (however you can have Gin specific code here)
 var UserHandlerModule = fx.Options(
-	fx.Provide(func(cf gox.CrossFunction, appConfig config.App, userDao common.UserStore) *UserHandler {
+	fx.Provide(func(cf gox.CrossFunction, appConfig config.App, userDao common.UserStore, messagingFactory bootstrap.MessagingFactory) *UserHandler {
 		return &UserHandler{
-			appConfig: appConfig,
-			cf:        cf,
-			userDao:   userDao,
+			appConfig:        appConfig,
+			cf:               cf,
+			userDao:          userDao,
+			messagingFactory: messagingFactory,
 		}
 	}),
 )

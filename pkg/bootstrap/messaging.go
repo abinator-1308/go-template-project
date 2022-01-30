@@ -38,5 +38,6 @@ func NewMessagingFactory(lifecycle fx.Lifecycle, cf gox.CrossFunction, configura
 			return service.Stop()
 		},
 	})
+
 	return &service, nil
 }
