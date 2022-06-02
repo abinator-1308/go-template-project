@@ -15,3 +15,7 @@ export INCLUDE_DYNAMO_TESTS=true
 export INTEGRATION_TESTS=true
 go  test ./... -v
 ```
+
+---
+## Add MySQL support
+Go to ```pkg/database/README.md```
