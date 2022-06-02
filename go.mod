@@ -10,6 +10,7 @@ require (
 	github.com/devlibx/gox-metrics v0.0.12
 	github.com/gin-gonic/gin v1.7.7
 	github.com/go-resty/resty/v2 v2.6.0
+	github.com/go-sql-driver/mysql v1.6.0
 	github.com/golang/mock v1.6.0
 	github.com/google/uuid v1.3.0
 	github.com/guregu/dynamo v1.11.0
