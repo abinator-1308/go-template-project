@@ -19,7 +19,7 @@ func TestUserDynamoOperations(t *testing.T) {
 	var ur *UserRepository
 	_ = fx.New(
 		fx.Supply(&MySQLConfig{User: "root", Password: "root"}),
-		fx.Provide(NewUserRepository, NewMySQLDb),
+		DatabaseModule,
 		fx.Populate(&ur),
 	).Start(context.Background())
 

@@ -61,6 +61,7 @@ func Main(ctx context.Context, appConfig *config.ApplicationConfig) *config.Appl
 		// Handlers
 		handler.IntegrationModule,
 		dynamodb.DatabaseModule,
+		// NOTE - FOR MYSQL delete above and add mysql.DatabaseModule
 
 		// Integration module provides some basic capabilities e.g. messaging, metric, and http support
 		bootstrap.IntegrationModule,

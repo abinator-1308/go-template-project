@@ -1,6 +1,9 @@
 package mysql
 
-import "github.com/devlibx/gox-base/util"
+import (
+	"github.com/devlibx/gox-base/util"
+	"go.uber.org/fx"
+)
 import _ "github.com/go-sql-driver/mysql"
 
 type MySQLConfig struct {
@@ -12,6 +15,10 @@ type MySQLConfig struct {
 	TablePrefix  string
 	TablePostfix string
 }
+
+var DatabaseModule = fx.Options(
+	fx.Provide(NewUserRepository, NewMySQLDb),
+)
 
 func (m *MySQLConfig) SetupDefaults() {
 	if util.IsStringEmpty(m.Host) {
