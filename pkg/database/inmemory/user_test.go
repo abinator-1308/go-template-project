@@ -14,7 +14,7 @@ func TestUserDynamoOperations(t *testing.T) {
 
 	err = ur.Persist(context.Background(), &objects.User{
 		ID:        "user_id",
-		Key:       "user_key",
+		Property:  "user_key",
 		Name:      "user_name",
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
@@ -22,8 +22,8 @@ func TestUserDynamoOperations(t *testing.T) {
 	assert.NoError(t, err)
 
 	fromDb, err := ur.Get(context.Background(), &objects.User{
-		ID:  "user_id",
-		Key: "user_key",
+		ID:       "user_id",
+		Property: "user_key",
 	})
 	assert.NoError(t, err)
 	assert.Equal(t, "user_name", fromDb.Name)

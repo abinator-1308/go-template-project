@@ -34,9 +34,9 @@ func (uh *UserHandler) Adduser() http.HandlerFunc {
 
 		// Expected request
 		type user struct {
-			ID   string `json:"id"`
-			Key  string `json:"key"`
-			Name string `json:"name"`
+			ID       string `json:"id"`
+			Property string `json:"property"`
+			Name     string `json:"name"`
 		}
 		u := &user{}
 		err := ginContext.BindJSON(u)
@@ -44,7 +44,7 @@ func (uh *UserHandler) Adduser() http.HandlerFunc {
 		if err == nil {
 			err = uh.userDao.Persist(r.Context(), &objects.User{
 				ID:        u.ID,
-				Key:       u.Key,
+				Property:  u.Property,
 				Name:      u.Name,
 				CreatedAt: time.Now(),
 				UpdatedAt: time.Now(),
@@ -66,9 +66,9 @@ func (uh *UserHandler) GetUser() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ginContext := server.GinContextFromHttpRequestVerified(r)
 		id := ginContext.Param("id")
-		key := ginContext.Param("key")
+		key := ginContext.Param("property")
 
-		if user, err := uh.userDao.Get(r.Context(), &objects.User{ID: id, Key: key}); err == nil {
+		if user, err := uh.userDao.Get(r.Context(), &objects.User{ID: id, Property: key}); err == nil {
 			ginContext.JSON(http.StatusOK, user)
 		} else {
 			w.WriteHeader(http.StatusInternalServerError)

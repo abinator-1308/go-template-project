@@ -19,7 +19,7 @@ func (u *UserRepository) Persist(ctx context.Context, user *objects.User) error 
 	_, err := q.PersistUser(ctx, db.PersistUserParams{
 		ID:       user.ID,
 		Name:     user.Name,
-		Property: user.Key,
+		Property: user.Property,
 	})
 	return err
 }
@@ -28,7 +28,7 @@ func (u *UserRepository) Get(ctx context.Context, user *objects.User) (*objects.
 	q := db.New(u.db)
 	if result, err := q.GetUser(ctx, db.GetUserParams{
 		ID:       user.ID,
-		Property: user.Key,
+		Property: user.Property,
 	}); err != nil {
 		return nil, err
 	} else {

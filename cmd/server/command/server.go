@@ -42,7 +42,7 @@ func (s *ServerImpl) routes() {
 		// User APIs
 		usersApi := v1Apis.Group("users")
 		usersApi.POST("", s.handleAddUser())
-		usersApi.GET("/:id/:key", s.handleGetUser())
+		usersApi.GET("/:id/:property", s.handleGetUser())
 	}
 
 }

@@ -19,13 +19,13 @@ func (u *UserRepository) Persist(ctx context.Context, user *objects.User) error 
 }
 
 func (u *UserRepository) Get(ctx context.Context, user *objects.User) (*objects.User, error) {
-	err := u.table.Get("id", user.ID).Range("key", dynamoOrm.Equal, user.Key).OneWithContext(ctx, dynamoOrm.AWSEncoding(user))
+	err := u.table.Get("id", user.ID).Range("property", dynamoOrm.Equal, user.Property).OneWithContext(ctx, dynamoOrm.AWSEncoding(user))
 	return user, errors.Wrap(err, "error in fetching user")
 }
 
 func (u *UserRepository) UpdateName(ctx context.Context, user *objects.User) error {
 	return u.table.Update("id", user.ID).
-		Range("key", user.Key).
+		Range("property", user.Property).
 		Set("name", user.Name).
 		RunWithContext(ctx)
 }
@@ -35,6 +35,6 @@ func NewUserRepository(dynamo *Dynamo) (*UserRepository, error) {
 		session:  dynamo.Session,
 		dynamoDb: dynamo.DynamoDb,
 	}
-	ud.table = ud.dynamoDb.Table("users")
+	ud.table = ud.dynamoDb.Table("users1")
 	return ud, nil
 }

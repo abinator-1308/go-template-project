@@ -33,14 +33,14 @@ func TestUserDynamoOperations(t *testing.T) {
 
 	err = userDao.Persist(context.Background(), &objects.User{
 		ID:        userId,
-		Key:       "harish",
+		Property:  "harish",
 		Name:      "name_1",
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	})
 	assert.NoError(t, err, "failed to save to db")
 
-	fromDb, err := userDao.Get(context.Background(), &objects.User{ID: userId, Key: "harish"})
+	fromDb, err := userDao.Get(context.Background(), &objects.User{ID: userId, Property: "harish"})
 	assert.NoError(t, err, "failed to get from db")
 	assert.Equal(t, "name_1", fromDb.Name)
 	fmt.Println(fromDb)

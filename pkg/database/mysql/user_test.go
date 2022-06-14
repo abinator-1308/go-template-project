@@ -26,7 +26,7 @@ func TestUserMySQLOperations(t *testing.T) {
 	id := uuid.NewString()
 	err := ur.Persist(context.Background(), &objects.User{
 		ID:        id,
-		Key:       "user_key",
+		Property:  "user_key",
 		Name:      "user_name",
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
@@ -34,8 +34,8 @@ func TestUserMySQLOperations(t *testing.T) {
 	assert.NoError(t, err)
 
 	fromDb, err := ur.Get(context.Background(), &objects.User{
-		ID:  id,
-		Key: "user_key",
+		ID:       id,
+		Property: "user_key",
 	})
 	assert.NoError(t, err)
 	assert.Equal(t, "user_name", fromDb.Name)

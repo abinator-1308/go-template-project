@@ -17,17 +17,17 @@ type UserRepository struct {
 
 func (u *UserRepository) Persist(ctx context.Context, user *objects.User) error {
 	if temp, ok := u.users[user.ID]; ok {
-		temp[user.Key] = user
+		temp[user.Property] = user
 	} else {
 		u.users[user.ID] = map[string]*objects.User{}
-		u.users[user.ID][user.Key] = user
+		u.users[user.ID][user.Property] = user
 	}
 	return nil
 }
 
 func (u *UserRepository) Get(ctx context.Context, user *objects.User) (*objects.User, error) {
 	if temp, ok := u.users[user.ID]; ok {
-		if temp1, ok := temp[user.Key]; ok {
+		if temp1, ok := temp[user.Property]; ok {
 			return temp1, nil
 		}
 	}
@@ -36,7 +36,7 @@ func (u *UserRepository) Get(ctx context.Context, user *objects.User) (*objects.
 
 func (u *UserRepository) UpdateName(ctx context.Context, user *objects.User) error {
 	if temp, ok := u.users[user.ID]; ok {
-		if temp1, ok := temp[user.Key]; ok {
+		if temp1, ok := temp[user.Property]; ok {
 			temp1.Name = user.Name
 			return nil
 		}

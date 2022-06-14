@@ -35,11 +35,11 @@ func TestAddUser(t *testing.T) {
 	r.POST("/users", func(c *gin.Context) {
 		server.EnsureGinContextWrapper(uh.Adduser()).ServeHTTP(c.Writer, c.Request)
 	})
-	r.GET("/users/:id/:key", func(c *gin.Context) {
+	r.GET("/users/:id/:property", func(c *gin.Context) {
 		server.EnsureGinContextWrapper(uh.GetUser()).ServeHTTP(c.Writer, c.Request)
 	})
 
-	req := httptest.NewRequest(http.MethodPost, "/users", strings.NewReader(`{"id": "`+id+`", "key": "`+key+`", "name": "3"}`))
+	req := httptest.NewRequest(http.MethodPost, "/users", strings.NewReader(`{"id": "`+id+`", "property": "`+key+`", "name": "3"}`))
 	w := httptest.NewRecorder()
 
 	// Trigger serve api to test end to end
@@ -58,6 +58,6 @@ func TestAddUser(t *testing.T) {
 	err = serialization.JsonBytesToObject(w.Body.Bytes(), u)
 	assert.NoError(t, err)
 	assert.Equal(t, id, u.ID)
-	assert.Equal(t, key, u.Key)
+	assert.Equal(t, key, u.Property)
 	assert.Equal(t, "3", u.Name)
 }

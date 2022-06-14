@@ -33,7 +33,7 @@ func TestApp(t *testing.T) {
 	client.SetHostURL(fmt.Sprintf("http://localhost:%d/%s", appConfig.App.HttpPort, appConfig.App.AppName))
 
 	// First store the new row
-	payload := fmt.Sprintf(`{"id": "%s", "key": "%s", "name": "user_random_1"}`, userId, key)
+	payload := fmt.Sprintf(`{"id": "%s", "property": "%s", "name": "user_random_1"}`, userId, key)
 	response, err := client.R().SetBody(payload).Post("/v1/users/")
 	assert.NoError(t, err)
 	assert.Equal(t, http.StatusOK, response.StatusCode())
