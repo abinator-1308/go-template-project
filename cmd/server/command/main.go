@@ -54,6 +54,9 @@ func MainWithConfigAsString(ctx context.Context, configAsString string) *config.
 // Main functions starts the app
 func Main(ctx context.Context, appConfig *config.ApplicationConfig) *config.ApplicationConfig {
 
+	// First we will configure correct database and stores here
+	// You can turn on/off DynamoDB vs MySQL support
+	// We will bind correct repository here
 	var dbModule fx.Option
 	useDynamoDbForPersistence := true
 	if useDynamoDbForPersistence {
