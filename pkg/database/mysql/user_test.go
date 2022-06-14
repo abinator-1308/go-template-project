@@ -3,7 +3,7 @@ package mysql
 import (
 	"context"
 	"github.com/google/uuid"
-	"github.com/harishb2k/go-template-project/pkg/database"
+	"github.com/harishb2k/go-template-project/pkg/common/objects"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/fx"
 	"os"
@@ -24,7 +24,7 @@ func TestUserDynamoOperations(t *testing.T) {
 	).Start(context.Background())
 
 	id := uuid.NewString()
-	err := ur.Persist(context.Background(), &database.User{
+	err := ur.Persist(context.Background(), &objects.User{
 		ID:        id,
 		Key:       "user_key",
 		Name:      "user_name",
@@ -33,7 +33,7 @@ func TestUserDynamoOperations(t *testing.T) {
 	})
 	assert.NoError(t, err)
 
-	fromDb, err := ur.Get(context.Background(), &database.User{
+	fromDb, err := ur.Get(context.Background(), &objects.User{
 		ID:   id,
 		Name: "user_name",
 	})

@@ -6,7 +6,7 @@ import (
 	"github.com/devlibx/gox-base/serialization"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/harishb2k/go-template-project/pkg/database"
+	"github.com/harishb2k/go-template-project/pkg/common/objects"
 	"github.com/harishb2k/go-template-project/pkg/server"
 	commonTesting "github.com/harishb2k/go-template-project/pkg/testing"
 	"github.com/stretchr/testify/assert"
@@ -54,7 +54,7 @@ func TestAddUser(t *testing.T) {
 	r.ServeHTTP(w, req)
 	assert.Equal(t, 200, w.Code)
 	fmt.Println(w.Body)
-	u := &database.User{}
+	u := &objects.User{}
 	err = serialization.JsonBytesToObject(w.Body.Bytes(), u)
 	assert.NoError(t, err)
 	assert.Equal(t, id, u.ID)

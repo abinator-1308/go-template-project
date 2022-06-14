@@ -11,4 +11,6 @@ else
     echo "****************** No DynamoDB connection - skip integration tests ******************"
 fi
 
+export INTEGRATION_TESTS=true
+export INCLUDE_MYSQL_TESTS=true
 go  test ./... -v

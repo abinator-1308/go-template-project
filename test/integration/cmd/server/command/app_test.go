@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 	app2 "github.com/harishb2k/go-template-project/cmd/server/command"
 	"github.com/harishb2k/go-template-project/config"
-	"github.com/harishb2k/go-template-project/pkg/database"
+	"github.com/harishb2k/go-template-project/pkg/common/objects"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"os"
@@ -43,7 +43,7 @@ func TestApp(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Check data coming from server
-	userFormServer := &database.User{}
+	userFormServer := &objects.User{}
 	err = serialization.JsonBytesToObject(response.Body(), userFormServer)
 	assert.NoError(t, err)
 	assert.Equal(t, userId, userFormServer.ID)

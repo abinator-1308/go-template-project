@@ -1,8 +1,6 @@
-package database
+package objects
 
-import (
-	"time"
-)
+import "time"
 
 type User struct {
 	ID        string    `dynamodbav:"id"`

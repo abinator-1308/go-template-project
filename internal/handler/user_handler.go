@@ -6,7 +6,7 @@ import (
 	"github.com/devlibx/gox-base/metrics"
 	"github.com/harishb2k/go-template-project/internal/common"
 	"github.com/harishb2k/go-template-project/pkg/bootstrap"
-	"github.com/harishb2k/go-template-project/pkg/database"
+	"github.com/harishb2k/go-template-project/pkg/common/objects"
 	"github.com/harishb2k/go-template-project/pkg/server"
 	"net/http"
 	"sync"
@@ -42,7 +42,7 @@ func (uh *UserHandler) Adduser() http.HandlerFunc {
 		err := ginContext.BindJSON(u)
 
 		if err == nil {
-			err = uh.userDao.Persist(r.Context(), &database.User{
+			err = uh.userDao.Persist(r.Context(), &objects.User{
 				ID:        u.ID,
 				Key:       u.Key,
 				Name:      u.Name,
@@ -68,7 +68,7 @@ func (uh *UserHandler) GetUser() http.HandlerFunc {
 		id := ginContext.Param("id")
 		key := ginContext.Param("key")
 
-		if user, err := uh.userDao.Get(r.Context(), &database.User{ID: id, Key: key}); err == nil {
+		if user, err := uh.userDao.Get(r.Context(), &objects.User{ID: id, Key: key}); err == nil {
 			ginContext.JSON(http.StatusOK, user)
 		} else {
 			w.WriteHeader(http.StatusInternalServerError)

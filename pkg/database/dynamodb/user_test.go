@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/google/uuid"
-	"github.com/harishb2k/go-template-project/pkg/database"
+	"github.com/harishb2k/go-template-project/pkg/common/objects"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/fx"
 	"os"
@@ -31,7 +31,7 @@ func TestUserDynamoOperations(t *testing.T) {
 	userDao, err := NewUserRepository(dynamo)
 	assert.NoError(t, err, "failed to setup table")
 
-	err = userDao.Persist(context.Background(), &database.User{
+	err = userDao.Persist(context.Background(), &objects.User{
 		ID:        userId,
 		Key:       "harish",
 		Name:      "name_1",
@@ -40,7 +40,7 @@ func TestUserDynamoOperations(t *testing.T) {
 	})
 	assert.NoError(t, err, "failed to save to db")
 
-	fromDb, err := userDao.Get(context.Background(), &database.User{ID: userId, Key: "harish"})
+	fromDb, err := userDao.Get(context.Background(), &objects.User{ID: userId, Key: "harish"})
 	assert.NoError(t, err, "failed to get from db")
 	assert.Equal(t, "name_1", fromDb.Name)
 	fmt.Println(fromDb)
