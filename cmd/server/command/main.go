@@ -5,10 +5,12 @@ import (
 	"github.com/devlibx/gox-base"
 	"github.com/devlibx/gox-base/metrics"
 	"github.com/devlibx/gox-base/serialization"
+	"github.com/harishb2k/go-template-project/internal/common"
 	"github.com/harishb2k/go-template-project/internal/config"
 	"github.com/harishb2k/go-template-project/internal/handler"
 	"github.com/harishb2k/go-template-project/pkg/bootstrap"
 	"github.com/harishb2k/go-template-project/pkg/database/dynamodb"
+	"github.com/harishb2k/go-template-project/pkg/database/mysql"
 	"github.com/harishb2k/go-template-project/pkg/server"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
@@ -51,6 +53,21 @@ func MainWithConfigAsString(ctx context.Context, configAsString string) *config.
 
 // Main functions starts the app
 func Main(ctx context.Context, appConfig *config.ApplicationConfig) *config.ApplicationConfig {
+
+	var dbModule fx.Option
+	useDynamoDbForPersistence := true
+	if useDynamoDbForPersistence {
+		dbModule = fx.Options(
+			fx.Provide(func(repository *dynamodb.UserRepository) common.UserStore { return repository }),
+			dynamodb.DatabaseModule,
+		)
+	} else {
+		dbModule = fx.Options(
+			fx.Provide(func(repository *mysql.UserRepository) common.UserStore { return repository }),
+			mysql.DatabaseModule,
+		)
+	}
+
 	app := fx.New(
 		fx.Provide(NewCrossFunctionProvider),
 		fx.Invoke(NewApplicationEntryPoint),
@@ -60,7 +77,7 @@ func Main(ctx context.Context, appConfig *config.ApplicationConfig) *config.Appl
 
 		// Handlers
 		handler.IntegrationModule,
-		dynamodb.DatabaseModule,
+		dbModule,
 		// NOTE - FOR MYSQL delete above and add mysql.DatabaseModule
 
 		// Integration module provides some basic capabilities e.g. messaging, metric, and http support
@@ -70,6 +87,7 @@ func Main(ctx context.Context, appConfig *config.ApplicationConfig) *config.Appl
 		fx.Supply(&appConfig.MetricConfig),
 		fx.Supply(&appConfig.ServerConfig),
 		fx.Supply(&appConfig.DynamoConfig),
+		fx.Supply(&appConfig.MySQLConfig),
 	)
 
 	err := app.Start(ctx)

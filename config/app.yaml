@@ -6,6 +6,13 @@ app:
 ddb:
   region: ap-south-1
 
+mysql:
+  host: localhost
+  port: 3306
+  user: root
+  password: root
+  db: test
+
 metric:
   enabled: true
   prefix: "ser"

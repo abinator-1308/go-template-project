@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func TestUserDynamoOperations(t *testing.T) {
+func TestUserMySQLOperations(t *testing.T) {
 	if os.Getenv("INCLUDE_MYSQL_TESTS") != "true" {
 		t.Skip("Skipping integration tests")
 	}
@@ -34,8 +34,8 @@ func TestUserDynamoOperations(t *testing.T) {
 	assert.NoError(t, err)
 
 	fromDb, err := ur.Get(context.Background(), &objects.User{
-		ID:   id,
-		Name: "user_name",
+		ID:  id,
+		Key: "user_key",
 	})
 	assert.NoError(t, err)
 	assert.Equal(t, "user_name", fromDb.Name)

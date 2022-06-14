@@ -17,8 +17,9 @@ type UserRepository struct {
 func (u *UserRepository) Persist(ctx context.Context, user *objects.User) error {
 	q := db.New(u.db)
 	_, err := q.PersistUser(ctx, db.PersistUserParams{
-		ID:   user.ID,
-		Name: user.Name,
+		ID:       user.ID,
+		Name:     user.Name,
+		Property: user.Key,
 	})
 	return err
 }
@@ -26,8 +27,8 @@ func (u *UserRepository) Persist(ctx context.Context, user *objects.User) error 
 func (u *UserRepository) Get(ctx context.Context, user *objects.User) (*objects.User, error) {
 	q := db.New(u.db)
 	if result, err := q.GetUser(ctx, db.GetUserParams{
-		ID:   user.ID,
-		Name: user.Name,
+		ID:       user.ID,
+		Property: user.Key,
 	}); err != nil {
 		return nil, err
 	} else {

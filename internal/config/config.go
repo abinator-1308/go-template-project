@@ -6,6 +6,7 @@ import (
 	"github.com/devlibx/gox-http/command"
 	messaging "github.com/devlibx/gox-messaging"
 	"github.com/harishb2k/go-template-project/pkg/database/dynamodb"
+	"github.com/harishb2k/go-template-project/pkg/database/mysql"
 )
 
 type ApplicationConfig struct {
@@ -15,4 +16,5 @@ type ApplicationConfig struct {
 	MessagingConfig messaging.Configuration `json:"messaging_config" yaml:"messaging_config"`
 	MetricConfig    metrics.Config          `json:"metric" yaml:"metric"`
 	DynamoConfig    dynamodb.DynamoConfig   `json:"ddb" yaml:"ddb"`
+	MySQLConfig     mysql.MySQLConfig       `json:"mysql" yaml:"mysql"`
 }

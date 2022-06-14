@@ -5,7 +5,6 @@ import (
 	"github.com/devlibx/gox-base/config"
 	"github.com/gin-gonic/gin"
 	"github.com/harishb2k/go-template-project/internal/common"
-	"github.com/harishb2k/go-template-project/pkg/database/dynamodb"
 	memory "github.com/harishb2k/go-template-project/pkg/database/inmemory"
 	"github.com/harishb2k/go-template-project/pkg/server"
 	"go.uber.org/fx"
@@ -28,7 +27,6 @@ var UserHandlerModule = fx.Options(
 // IntegrationModule is full wired module to be used in application
 var IntegrationModule = fx.Options(
 	UserHandlerModule,
-	fx.Provide(func(repository *dynamodb.UserRepository) common.UserStore { return repository }),
 )
 
 // -------------------------------------- Testing Modules --------------------------------------------------------------
